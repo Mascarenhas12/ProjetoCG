@@ -12,7 +12,7 @@ function init() {
     createScene();
     createCamera();
 
-    render();
+
 }
 
 function render() {
@@ -38,6 +38,7 @@ function createCamera() {
     camera.position.y = 50;
     camera.position.z = 50;
     camera.lookAt(scene.position);
+    return camera;
 }
 
 function addTableTopMain(obj, x, y, z) {
@@ -82,9 +83,8 @@ function createPlataform(x, y, z) {
 function addSphere(obj, x, y, z){
     'use strict';
 
-    ball = new THREE.Object3D();
-    geometry = new THREE.SphereGeometry(2 , 32, 32);/*perguntar ao stor*/
-    mesh = new THREE.Mesh(geometry, material);
+    ball = new THREE.SphereGeometry(2 , 32, 32);/*perguntar ao stor*/
+    mesh = new THREE.Mesh(ball, material);
     mesh.position.set(x, y, z);
     obj.add(mesh);
 
@@ -102,8 +102,8 @@ function onKeyDown(e){
       break;
 
     case 50:// "2"
-      camera.position.x=0;
-      camera.position.y=50;
+      camera.position.x=50;
+      camera.position.y=0;
       camera.position.z=0;
       camera.lookAt(scene.position);
       break;

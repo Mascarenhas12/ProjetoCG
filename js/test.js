@@ -65,10 +65,10 @@ function createPlataform(x, y, z) {
     addTableTopMain(plat, 0, 0, 0);
     addTableTopAux(plat,-12, 0, 0);
     addTableTopAux(plat,12, 0, 0);
-    addSphere(plat,10,1.5,8);
-    addSphere(plat,-10,1.5,-8);
-    addSphere(plat,10,1.5,-8);
-    addSphere(plat,-10,1.5,8);
+    addSphere(plat,12,-4.5,7);
+    addSphere(plat,-12,-4.5,-7);
+    addSphere(plat,12,-4.5,-7);
+    addSphere(plat,-12,-4.5,7);
 
 
     scene.add(plat);

@@ -8,6 +8,7 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
+    window.addEventListener("keydown",onKeyDown);
     createScene();
     createCamera();
 
@@ -33,9 +34,9 @@ function createCamera() {
                                          window.innerWidth / window.innerHeight,
                                          1,
                                          1000);
-    camera.position.x = 0;
+    camera.position.x = 50;
     camera.position.y = 50;
-    camera.position.z = 0;
+    camera.position.z = 50;
     camera.lookAt(scene.position);
 }
 
@@ -63,8 +64,8 @@ function createPlataform(x, y, z) {
     material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
 
     addTableTopMain(plat, 0, 0, 0);
-    addTableTopAux(plat,-10.8, 0, 0);
-    addTableTopAux(plat,10.8, 0, 0);
+    addTableTopAux(plat,-10.5, 0, 0);
+    addTableTopAux(plat,10.5, 0, 0);
     addSphere(plat,12,-4.5,7);
     addSphere(plat,-12,-4.5,-7);
     addSphere(plat,12,-4.5,-7);
@@ -78,6 +79,55 @@ function createPlataform(x, y, z) {
     plat.position.z = z;
 }
 
+function addSphere(obj, x, y, z){
+    'use strict';
+
+    ball = new THREE.Object3D();
+    geometry = new THREE.SphereGeometry(2 , 32, 32);/*perguntar ao stor*/
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
+    obj.add(mesh);
+
+}
+
+function onKeyDown(e){
+  'use strict';
+
+  switch(e.keyCode){
+    case 49:// "1"
+      camera.position.x=50;
+      camera.position.y=50;
+      camera.position.z=50;
+      camera.lookAt(scene.position);
+      break;
+
+    case 50:// "2"
+      camera.position.x=0;
+      camera.position.y=50;
+      camera.position.z=0;
+      camera.lookAt(scene.position);
+      break;
+
+    case 51:// "3"
+      camera.position.x=0;
+      camera.position.y=-50;
+      camera.position.z=0;
+      camera.lookAt(scene.position);
+      break;
+
+    case 79:// "o"
+      scene.traverse(function (node){
+        if(node instanceof THREE.Mesh){
+          node.material.wireframe = !node.material.wireframe;
+        }
+      });
+      break;
+  }
+
+  render();
+}
+
+
 /*
 
 class carrinho{
@@ -89,15 +139,3 @@ carrinho.move (po caralho)
 
 
 */
-
-function addSphere(obj, x, y, z){
-    'use strict';
-
-    ball = new THREE.Object3D();
-    material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-    geometry = new THREE.SphereGeometry(2 , 32, 32);
-    mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(x, y, z);
-    obj.add(mesh);
-
-}

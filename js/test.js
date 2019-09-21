@@ -33,9 +33,9 @@ function createCamera() {
                                          window.innerWidth / window.innerHeight,
                                          1,
                                          1000);
-    camera.position.x = 50;
+    camera.position.x = 0;
     camera.position.y = 50;
-    camera.position.z = 50;
+    camera.position.z = 0;
     camera.lookAt(scene.position);
 }
 
@@ -63,8 +63,8 @@ function createPlataform(x, y, z) {
     material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
 
     addTableTopMain(plat, 0, 0, 0);
-    addTableTopAux(plat,-12, 0, 0);
-    addTableTopAux(plat,12, 0, 0);
+    addTableTopAux(plat,-10.8, 0, 0);
+    addTableTopAux(plat,10.8, 0, 0);
     addSphere(plat,12,-4.5,7);
     addSphere(plat,-12,-4.5,-7);
     addSphere(plat,12,-4.5,-7);

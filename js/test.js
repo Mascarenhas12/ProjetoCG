@@ -11,8 +11,6 @@ function init() {
     window.addEventListener("keydown",onKeyDown);
     createScene();
     createCamera();
-
-
 }
 
 function render() {

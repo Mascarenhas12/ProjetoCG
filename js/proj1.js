@@ -1,6 +1,3 @@
-//_robot{base,ball,arm,hand};
-//_target;
-
 function main() {
   new Environment().start();
 }
@@ -86,12 +83,33 @@ function Environment() {
      // Movimento conforme camara ou referencial?
      if (_robot.userData.movingLeft) {
        _robot.translateZ(-0.5);
-     } if (_robot.userData.movingFoward) {
+     }
+     if (_robot.userData.movingFoward) {
        _robot.translateX(0.5);
-     } if (_robot.userData.movingRight) {
+     }
+     if (_robot.userData.movingRight) {
        _robot.translateZ(0.5);
-     } if (_robot.userData.movingBackward) {
+     }
+     if (_robot.userData.movingBackward) {
        _robot.translateX(-0.5);
+     }
+     if (_robot.userData.rotateYPositive) {
+       _robot.rotateArm(Math.PI/32);
+     }
+     if (_robot.userData.rotateYNegative) {
+       _robot.rotateArm(-Math.PI/32);
+     }
+     if (_robot.userData.rotateArmPositive) {
+       if (_robot.userData.currRotation < Math.PI/2.8) {
+         _robot.userData.currRotation += Math.PI/32;
+         _robot.moveArm(Math.PI/32);
+       }
+     }
+     if (_robot.userData.rotateArmNegative) {
+       if (_robot.userData.currRotation > -Math.PI/3.5) {
+         _robot.userData.currRotation -= Math.PI/32;
+         _robot.moveArm(-Math.PI/32);
+       }
      }
   }
 
@@ -119,6 +137,22 @@ function Environment() {
 
       case 40: // "BACKWARD"
         _robot.userData.movingBackward = true;
+        break;
+
+      case 65: // "A"
+        _robot.userData.rotateYPositive = true;
+        break;
+
+      case 83: // "S"
+        _robot.userData.rotateYNegative = true;
+        break;
+
+      case 81: // "Q"
+        _robot.userData.rotateArmPositive = true;
+        break;
+
+      case 87: // "W"
+        _robot.userData.rotateArmNegative = true;
         break;
 
       case 49: // "1"
@@ -165,6 +199,23 @@ function Environment() {
       case 40: // "BACKWARD"
         _robot.userData.movingBackward = false;
         break;
+
+      case 65: // "A"
+        _robot.userData.rotateYPositive = false;
+        break;
+
+      case 83: // "S"
+        _robot.userData.rotateYNegative = false;
+        break;
+
+      case 81: // "Q"
+        _robot.userData.rotateArmPositive = false;
+        break;
+
+      case 87: // "W"
+        _robot.userData.rotateArmNegative = false;
+        break;
+
     }
   }
 }

@@ -6,10 +6,23 @@ class Robot extends THREE.Object3D {
     this.userData.movingFoward = false;
     this.userData.movingRight = false;
     this.userData.movingBackward = false;
+    this.userData.rotateArmPositive = false;
+    this.userData.rotateArmPositive = false;
+    this.userData.RotationBasePositive = false;
+    this.userData.RotationBaseNegative = false;
+    this.userData.currRotation = 0;
 
     this.add(new Base(pos));
-    this.add(new Arm(pos));
-    this.add(new Hand(pos));
+    this.body = new Body(pos);//move semi sphere to class body
+    this.add(this.body);
+  }
+
+  rotateArm(angle){ // change rotation
+    this.body.rotateY(angle);
+  }
+
+  moveArm(angle){
+    this.body.rotateZ(angle);
   }
 }
 
@@ -49,12 +62,13 @@ class Base extends THREE.Object3D {
   constructor(pos){
     super();
     this.add(new Box([pos[0], pos[1], pos[2]], [16,2,12]));
-    this.add(new Box([pos[0]-10.5, pos[1], pos[2]], [4,4,16]))
-    this.add(new Box([pos[0]+10.5, pos[1], pos[2]], [4,4,16]))
+    this.add(new Box([pos[0]-10, pos[1], pos[2]], [4,4,16]))
+    this.add(new Box([pos[0]+10, pos[1], pos[2]], [4,4,16]))
     this.add(new Sphere([pos[0]+11.5, pos[1]-4, pos[2]+6.5], [2,20,20]))
     this.add(new Sphere([pos[0]+11.5, pos[1]-4, pos[2]-6.5], [2,20,20]))
     this.add(new Sphere([pos[0]-11.5, pos[1]-4, pos[2]+6.5], [2,20,20]))
     this.add(new Sphere([pos[0]-11.5, pos[1]-4, pos[2]-6.5], [2,20,20]))
+    this.add(new Sphere([pos[0], pos[1]+1, pos[2]], [6, 20, 20, 0 ,2*Math.PI, 0, 0.5 * Math.PI]));
   }
 
   moveWheels() {
@@ -65,28 +79,28 @@ class Base extends THREE.Object3D {
 class Arm extends THREE.Object3D {
   constructor(pos){
     super();
-    this.add(new Sphere([pos[0], pos[1]+1, pos[2]], [6, 32, 32, 0 ,2*Math.PI, 0, 0.5 * Math.PI]));
-    this.add(new Box([pos[0], pos[1]+12, pos[2]], [2, 10, 2]));
+    this.add(new Box([pos[0], pos[1]+12, pos[2]], [2, 13, 2]));
     this.add(new Sphere([pos[0], pos[1]+18, pos[2]], [2.5, 32, 32]));
-    this.add(new Box([pos[0], pos[1]+24, pos[2]], [2, 10, 2]));
-    this.add(new Sphere([pos[0], pos[1]+30, pos[2]], [2.5, 32, 32]));
-
-  }
-
-  moveArm() {
-
-  }
-
-  moveBall() {
-
+    this.add(new Box([pos[0]+5, pos[1]+19, pos[2]], [10, 2, 2]));
+    this.add(new Sphere([pos[0]+12, pos[1]+19, pos[2]], [2.5, 32, 32]));
   }
 }
 
 class Hand extends THREE.Object3D {
   constructor(pos){
     super();
-    this.add(new Box([pos[0],pos[1]+33,pos[2]],[6,1,6]));
-    this.add(new Box([pos[0]-2,pos[1]+35,pos[2]],[1,4,1]));
-    this.add(new Box([pos[0]+2,pos[1]+35,pos[2]],[1,4,1]));
+    this.add(new Box([pos[0]+15,pos[1]+20,pos[2]],[1,6,6]));
+    this.add(new Box([pos[0]+18,pos[1]+21,pos[2]],[4,1,1]));
+    this.add(new Box([pos[0]+18,pos[1]+18,pos[2]],[4,1,1]));
+  }
+}
+
+class Body extends THREE.Object3D {
+  constructor(pos){
+    super();
+    this.arm = new Arm(pos); //combine arm e hand noutra class
+    this.hand = new Hand(pos);
+    this.add(this.arm);
+    this.add(this.hand);
   }
 }

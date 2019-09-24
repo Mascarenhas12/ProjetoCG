@@ -30,6 +30,7 @@ function Environment() {
       var scene = new THREE.Scene();
       scene.add(new THREE.AxisHelper(10));
       scene.add(_robot);
+      scene.add(new Pedestal([0,0,0]));
 
       return scene;
   }
@@ -37,13 +38,21 @@ function Environment() {
   function createCamera() {
       'use strict';
 
-      var camera = new THREE.PerspectiveCamera(90,
-                                           window.innerWidth / window.innerHeight,
-                                           1,
-                                           1000);
-      camera.position.x = 50;
+      var ratio = window.innerWidth / window.innerHeight;
+      var view = 50;
+
+      var camera = new THREE.OrthographicCamera(
+        ratio*view / - 2,
+        ratio*view / 2,
+        view / 2,
+        view / - 2,
+        -1000,
+        1000
+      );
+
+      camera.position.x = 0;
       camera.position.y = 50;
-      camera.position.z = 50;
+      camera.position.z = 0;
       camera.lookAt(_scene.position);
       return camera;
   }
@@ -93,19 +102,19 @@ function Environment() {
      if (_robot.userData.movingBackward) {
        _robot.translateX(-0.5);
      }
-     if (_robot.userData.rotateYPositive) {
+     if (_robot.userData.rotateLeft) {
        _robot.rotateArm(Math.PI/32);
      }
-     if (_robot.userData.rotateYNegative) {
+     if (_robot.userData.rotateRight) {
        _robot.rotateArm(-Math.PI/32);
      }
-     if (_robot.userData.rotateArmPositive) {
+     if (_robot.userData.moveArmBackward) {
        if (_robot.userData.currRotation < Math.PI/2.8) {
          _robot.userData.currRotation += Math.PI/32;
          _robot.moveArm(Math.PI/32);
        }
      }
-     if (_robot.userData.rotateArmNegative) {
+     if (_robot.userData.moveArmFoward) {
        if (_robot.userData.currRotation > -Math.PI/3.5) {
          _robot.userData.currRotation -= Math.PI/32;
          _robot.moveArm(-Math.PI/32);
@@ -140,31 +149,31 @@ function Environment() {
         break;
 
       case 65: // "A"
-        _robot.userData.rotateYPositive = true;
+        _robot.userData.rotateLeft = true;
         break;
 
       case 83: // "S"
-        _robot.userData.rotateYNegative = true;
+        _robot.userData.rotateRight = true;
         break;
 
       case 81: // "Q"
-        _robot.userData.rotateArmPositive = true;
+        _robot.userData.moveArmBackward = true;
         break;
 
       case 87: // "W"
-        _robot.userData.rotateArmNegative = true;
+        _robot.userData.moveArmFoward = true;
         break;
 
       case 49: // "1"
-        changeCamera(50, 50, 50);
+        changeCamera(0, 50, 0);
         break;
 
       case 50: // "2"
-        changeCamera(50, 0, 0);
+        changeCamera(0, 0, 50);
         break;
 
       case 51: // "3"
-        changeCamera(0, 0, 50);
+        changeCamera(50, 0, 0);
         break;
 
       case 52: // "4"
@@ -201,21 +210,20 @@ function Environment() {
         break;
 
       case 65: // "A"
-        _robot.userData.rotateYPositive = false;
+        _robot.userData.rotateLeft = false;
         break;
 
       case 83: // "S"
-        _robot.userData.rotateYNegative = false;
+        _robot.userData.rotateRight = false;
         break;
 
       case 81: // "Q"
-        _robot.userData.rotateArmPositive = false;
+        _robot.userData.moveArmBackward = false;
         break;
 
       case 87: // "W"
-        _robot.userData.rotateArmNegative = false;
+        _robot.userData.moveArmFoward = false;
         break;
-
     }
   }
 }

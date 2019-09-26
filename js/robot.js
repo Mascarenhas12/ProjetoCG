@@ -14,8 +14,10 @@ class Robot extends THREE.Object3D {
     this.userData.moveArmFoward = false;
     this.userData.currRotation = 0;
 
-    this.add(new Base(pos));
+    this.base = new Base(pos)
     this.body = new Body(pos);
+
+    this.add(this.base);
     this.add(this.body);
   }
 
@@ -26,22 +28,46 @@ class Robot extends THREE.Object3D {
   moveArm(angle){
     this.body.moveArm(angle);
   }
+
+  moveWheelsZ(angle){
+    this.base.moveWheelsZ(angle);
+  }
+
+  moveWheelsX(angle){
+    this.base.moveWheelsX(angle);
+  }
 }
 
 class Base extends THREE.Object3D {
   constructor(pos){
     super();
+
+    this.userData.wheelFR = new Sphere([pos[0]+10, pos[1]-4, pos[2]+6], [2,10,10]);
+    this.userData.wheelFL = new Sphere([pos[0]+10, pos[1]-4, pos[2]-6], [2,10,10]);
+    this.userData.wheelBR = new Sphere([pos[0]-10, pos[1]-4, pos[2]+6], [2,20,20]);
+    this.userData.wheelBL = new Sphere([pos[0]-10, pos[1]-4, pos[2]-6], [2,20,20]);
+
     this.add(new Box([pos[0], pos[1], pos[2]], [16,2,12]));
-    this.add(new Box([pos[0]-10, pos[1], pos[2]], [4,4,16]))
-    this.add(new Box([pos[0]+10, pos[1], pos[2]], [4,4,16]))
-    this.add(new Sphere([pos[0]+10, pos[1]-4, pos[2]+6], [2,20,20]))
-    this.add(new Sphere([pos[0]+10, pos[1]-4, pos[2]-6], [2,20,20]))
-    this.add(new Sphere([pos[0]-10, pos[1]-4, pos[2]+6], [2,20,20]))
-    this.add(new Sphere([pos[0]-10, pos[1]-4, pos[2]-6], [2,20,20]))
+    this.add(new Box([pos[0]-10, pos[1], pos[2]], [4,4,16]));
+    this.add(new Box([pos[0]+10, pos[1], pos[2]], [4,4,16]));
+    this.add(this.userData.wheelFR);
+    this.add(this.userData.wheelFL);
+    this.add(this.userData.wheelBR);
+    this.add(this.userData.wheelBL);
   }
 
-  moveWheels() {
+  moveWheelsZ(angle){
+    this.userData.wheelFR.rotateZ(angle);
+    this.userData.wheelFL.rotateZ(angle);
+    this.userData.wheelBR.rotateZ(angle);
+    this.userData.wheelBL.rotateZ(angle);
+  }
 
+  moveWheelsX(angle){
+    this.userData.wheelFR.rotateX(angle);
+    this.userData.wheelFL.rotateX(angle);
+    this.userData.wheelBR.rotateX(angle);
+    this.userData.wheelBL.rotateX(angle);
   }
 }
 

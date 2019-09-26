@@ -15,7 +15,7 @@ function Environment() {
 
     document.body.appendChild(_renderer.domElement);
 
-    /*add event listeners here*/
+    /* add event listeners here */
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
     window.addEventListener('keypress', onKeyPress);
@@ -93,15 +93,19 @@ function Environment() {
      // Movimento conforme camara ou referencial?
      if (_robot.userData.movingLeft) {
        _robot.translateZ(-0.5);
+       _robot.moveWheelsX(Math.PI/32);
      }
      if (_robot.userData.movingFoward) {
        _robot.translateX(0.5);
+       _robot.moveWheelsZ(-Math.PI/32);
      }
      if (_robot.userData.movingRight) {
        _robot.translateZ(0.5);
+       _robot.moveWheelsX(Math.PI/32);
      }
      if (_robot.userData.movingBackward) {
        _robot.translateX(-0.5);
+       _robot.moveWheelsZ(Math.PI/32);
      }
      if (_robot.userData.rotateLeft) {
        _robot.rotateArm(Math.PI/32);

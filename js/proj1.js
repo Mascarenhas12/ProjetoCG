@@ -6,6 +6,7 @@ function Environment() {
   'use strict'
 
   var _robot = new Robot([0,0,0]);
+
   var _scene = createScene();
   var _camera = createCamera();
   var _renderer = createRenderer();
@@ -18,7 +19,6 @@ function Environment() {
     /* add event listeners here */
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
-    window.addEventListener('keypress', onKeyPress);
     //window.addEventListener('resize', onResize);
 
     render();
@@ -58,7 +58,7 @@ function Environment() {
       return camera;
   }
 
-  function changeCamera(x,y,z) {
+  function changeCamera(x, y, z) {
     'use strict'
 
     _camera.position.x = x;
@@ -90,7 +90,6 @@ function Environment() {
   function update(){
      'use strict'
 
-     // Movimento conforme camara ou referencial?
      if (_robot.userData.movingLeft) {
        _robot.translateZ(-0.5);
        _robot.moveWheelsX(Math.PI/32);
@@ -181,6 +180,18 @@ function Environment() {
         changeCamera(50, 0, 0);
         break;
 
+      case 52: // "4"
+        if (_robot.userData.unlockVisibility){
+          _robot.userData.unlockVisibility = false;
+
+          _scene.traverse(function (node){
+            if (node instanceof THREE.Mesh){
+              node.material.wireframe = !node.material.wireframe;
+            }
+          });
+        }
+        break;
+
       default:
         break;
     }
@@ -206,6 +217,10 @@ function Environment() {
         _robot.userData.movingBackward = false;
         break;
 
+      case 52: // "4"
+        _robot.userData.unlockVisibility = true;
+        break;
+
       case 65: // "A"
         _robot.userData.rotateLeft = false;
         break;
@@ -221,18 +236,9 @@ function Environment() {
       case 87: // "W"
         _robot.userData.moveArmFoward = false;
         break;
-    }
-  }
 
-  function onKeyPress(e){
-    'use strict';
-
-    if (e.keyCode === 52){ // "4"
-      _scene.traverse(function (node){
-        if (node instanceof THREE.Mesh){
-          node.material.wireframe = !node.material.wireframe;
-        }
-      });
+      default:
+        break;
     }
   }
 }

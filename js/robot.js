@@ -8,11 +8,14 @@ class Robot extends THREE.Object3D {
     this.userData.movingFoward = false;
     this.userData.movingRight = false;
     this.userData.movingBackward = false;
+
     this.userData.rotateLeft = false;
     this.userData.rotateRight = false;
     this.userData.moveArmBackward = false;
     this.userData.moveArmFoward = false;
     this.userData.currRotation = 0;
+
+    this.userData.unlockVisibility = true; // So podes tar a trolar!!!!!
 
     this.base = new Base(pos)
     this.body = new Body(pos);
@@ -39,6 +42,8 @@ class Robot extends THREE.Object3D {
 }
 
 class Base extends THREE.Object3D {
+  'use strict';
+
   constructor(pos){
     super();
 
@@ -72,6 +77,8 @@ class Base extends THREE.Object3D {
 }
 
 class Body extends THREE.Object3D {
+  'use strict';
+
   constructor(pos){
     super();
     this.add(new Sphere([pos[0], pos[1]+1, pos[2]], [6, 20, 20, 0 ,2*Math.PI, 0, 0.5 * Math.PI]));
@@ -85,6 +92,8 @@ class Body extends THREE.Object3D {
 }
 
 class Box extends THREE.Object3D {
+  'use strict';
+
   constructor(pos, dim){
     super();
     var mesh = new THREE.Mesh(
@@ -98,11 +107,13 @@ class Box extends THREE.Object3D {
 }
 
 class Sphere extends THREE.Object3D {
+  'use strict';
+
   constructor(pos, dim){
     super();
 
     let v = [0, Math.PI * 2, 0, Math.PI];
-    if(dim.length > 3)
+    if (dim.length > 3)
       v = [dim[3], dim[4], dim[5], dim[6]];
 
     var mesh = new THREE.Mesh(
@@ -116,6 +127,8 @@ class Sphere extends THREE.Object3D {
 }
 
 class Arm extends THREE.Object3D {
+  'use strict';
+
   constructor(pos){
     super();
     this.add(new Box([pos[0], pos[1]+12, pos[2]], [2, 13, 2]));
@@ -126,6 +139,8 @@ class Arm extends THREE.Object3D {
 }
 
 class Hand extends THREE.Object3D {
+  'use strict';
+
   constructor(pos){
     super();
     this.add(new Box([pos[0]+15, pos[1]+18, pos[2]], [1,6,6]));
@@ -135,6 +150,8 @@ class Hand extends THREE.Object3D {
 }
 
 class ForeArm extends THREE.Object3D {
+  'use strict';
+
   constructor(pos){
     super();
     this.add(new Arm(pos));
@@ -143,7 +160,9 @@ class ForeArm extends THREE.Object3D {
 }
 
 class Cylinder extends THREE.Object3D {
-  constructor(pos,dim){
+  'use strict';
+
+  constructor(pos, dim){
     super();
     var mesh = new THREE.Mesh(
       new THREE.CylinderGeometry(dim[0], dim[1], dim[2], dim[3]),
@@ -156,6 +175,8 @@ class Cylinder extends THREE.Object3D {
 }
 
 class Torus extends THREE.Object3D {
+  'use strict';
+
   constructor(pos,dim){
     super();
     var mesh = new THREE.Mesh(
@@ -169,9 +190,11 @@ class Torus extends THREE.Object3D {
 }
 
 class Pedestal extends THREE.Object3D {
+  'use strict';
+
   constructor(pos){
     super();
-    this.add(new Cylinder([pos[0]+30,pos[1]+4,pos[2]], [3,3,20,64]));
-    this.add(new Torus([pos[0]+30,pos[1]+17.6,pos[2]], [2.5,1,30,20]));
+    this.add(new Cylinder([pos[0]+30, pos[1]+4, pos[2]], [3,3,20,64]));
+    this.add(new Torus([pos[0]+30, pos[1]+17.6, pos[2]], [2.5,1,30,20]));
   }
 }

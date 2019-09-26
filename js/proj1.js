@@ -6,10 +6,14 @@ function Environment() {
   'use strict'
 
   var _robot = new Robot([0,0,0]);
+  var _pedestal = new Pedestal([0,0,0]);
 
   var _scene = createScene();
-  var _camera = createCamera();
   var _renderer = createRenderer();
+  var camera1 = createCamera(0, 50, 0);
+  var camera2 = createCamera(0, 0, 50);
+  var camera3 = createCamera(50, 0, 0);
+  var _currentCamera = camera1;
 
   this.start = function() {
     'use strict'
@@ -31,12 +35,12 @@ function Environment() {
       var scene = new THREE.Scene();
       scene.add(new THREE.AxisHelper(10));
       scene.add(_robot);
-      scene.add(new Pedestal([0,0,0]));
+      scene.add(_pedestal);
 
       return scene;
   }
 
-  function createCamera() {
+  function createCamera(x, y, z) {
       'use strict';
 
       var ratio = window.innerWidth / window.innerHeight;
@@ -51,20 +55,11 @@ function Environment() {
         1000
       );
 
-      camera.position.x = 0;
-      camera.position.y = 50;
-      camera.position.z = 0;
+      camera.position.x = x;
+      camera.position.y = y;
+      camera.position.z = z;
       camera.lookAt(_scene.position);
       return camera;
-  }
-
-  function changeCamera(x, y, z) {
-    'use strict'
-
-    _camera.position.x = x;
-    _camera.position.y = y;
-    _camera.position.z = z;
-    _camera.lookAt(_scene.position);
   }
 
   function createRenderer() {
@@ -92,19 +87,15 @@ function Environment() {
 
      if (_robot.userData.movingLeft) {
        _robot.translateZ(-0.5);
-       _robot.moveWheelsX(Math.PI/32);
      }
      if (_robot.userData.movingFoward) {
        _robot.translateX(0.5);
-       _robot.moveWheelsZ(-Math.PI/32);
      }
      if (_robot.userData.movingRight) {
        _robot.translateZ(0.5);
-       _robot.moveWheelsX(Math.PI/32);
      }
      if (_robot.userData.movingBackward) {
        _robot.translateX(-0.5);
-       _robot.moveWheelsZ(Math.PI/32);
      }
      if (_robot.userData.rotateLeft) {
        _robot.rotateArm(Math.PI/32);
@@ -128,8 +119,7 @@ function Environment() {
 
   function render(){
     'use strict'
-
-    _renderer.render(_scene,_camera);
+    _renderer.render(_scene,_currentCamera);
   }
 
   function onKeyDown(e){
@@ -169,26 +159,25 @@ function Environment() {
         break;
 
       case 49: // "1"
-        changeCamera(0, 50, 0);
+        _currentCamera = camera1;
+        render();
         break;
 
       case 50: // "2"
-        changeCamera(0, 0, 50);
+        _currentCamera = camera2;
+        render();
         break;
 
       case 51: // "3"
-        changeCamera(50, 0, 0);
+        _currentCamera = camera3;
+        render();
         break;
 
       case 52: // "4"
         if (_robot.userData.unlockVisibility){
           _robot.userData.unlockVisibility = false;
-
-          _scene.traverse(function (node){
-            if (node instanceof THREE.Mesh){
-              node.material.wireframe = !node.material.wireframe;
-            }
-          });
+          _robot.changeVisibility();
+          _pedestal.changeVisibility();
         }
         break;
 

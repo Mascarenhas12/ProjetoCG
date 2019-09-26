@@ -1,3 +1,5 @@
+//node.material.wireframe = !node.material.wireframe;
+
 class Robot extends THREE.Object3D {
   'use strict';
 
@@ -32,12 +34,10 @@ class Robot extends THREE.Object3D {
     this.body.moveArm(angle);
   }
 
-  moveWheelsZ(angle){
-    this.base.moveWheelsZ(angle);
-  }
-
-  moveWheelsX(angle){
-    this.base.moveWheelsX(angle);
+  changeVisibility(){
+    this.children.forEach(function(child){
+      child.changeVisibility()
+    });
   }
 }
 
@@ -47,32 +47,19 @@ class Base extends THREE.Object3D {
   constructor(pos){
     super();
 
-    this.userData.wheelFR = new Sphere([pos[0]+10, pos[1]-4, pos[2]+6], [2,10,10]);
-    this.userData.wheelFL = new Sphere([pos[0]+10, pos[1]-4, pos[2]-6], [2,10,10]);
-    this.userData.wheelBR = new Sphere([pos[0]-10, pos[1]-4, pos[2]+6], [2,20,20]);
-    this.userData.wheelBL = new Sphere([pos[0]-10, pos[1]-4, pos[2]-6], [2,20,20]);
-
     this.add(new Box([pos[0], pos[1], pos[2]], [16,2,12]));
     this.add(new Box([pos[0]-10, pos[1], pos[2]], [4,4,16]));
     this.add(new Box([pos[0]+10, pos[1], pos[2]], [4,4,16]));
-    this.add(this.userData.wheelFR);
-    this.add(this.userData.wheelFL);
-    this.add(this.userData.wheelBR);
-    this.add(this.userData.wheelBL);
+    this.add(new Sphere([pos[0]+10, pos[1]-4, pos[2]+6], [2,20,20]));
+    this.add(new Sphere([pos[0]+10, pos[1]-4, pos[2]-6], [2,20,20]));
+    this.add(new Sphere([pos[0]-10, pos[1]-4, pos[2]+6], [2,20,20]));
+    this.add(new Sphere([pos[0]-10, pos[1]-4, pos[2]-6], [2,20,20]));
   }
 
-  moveWheelsZ(angle){
-    this.userData.wheelFR.rotateZ(angle);
-    this.userData.wheelFL.rotateZ(angle);
-    this.userData.wheelBR.rotateZ(angle);
-    this.userData.wheelBL.rotateZ(angle);
-  }
-
-  moveWheelsX(angle){
-    this.userData.wheelFR.rotateX(angle);
-    this.userData.wheelFL.rotateX(angle);
-    this.userData.wheelBR.rotateX(angle);
-    this.userData.wheelBL.rotateX(angle);
+  changeVisibility(){
+    this.children.forEach(function(child){
+        child.changeVisibility()
+    });
   }
 }
 
@@ -89,6 +76,12 @@ class Body extends THREE.Object3D {
   moveArm(angle){
     this.forearm.rotateZ(angle);
   }
+
+  changeVisibility(){
+    this.children.forEach(function(child){
+        child.changeVisibility()
+    });
+  }
 }
 
 class Box extends THREE.Object3D {
@@ -103,6 +96,14 @@ class Box extends THREE.Object3D {
 
     mesh.position.set(pos[0], pos[1], pos[2]);
     this.add(mesh);
+  }
+
+  changeVisibility(){
+    this.children.forEach(function(child){
+      if(child instanceof THREE.Mesh){
+        child.material.wireframe = !child.material.wireframe;
+      }
+    });
   }
 }
 
@@ -124,6 +125,14 @@ class Sphere extends THREE.Object3D {
     this.add(mesh);
     this.position.set(pos[0], pos[1], pos[2]);
   }
+
+  changeVisibility(){
+    this.children.forEach(function(child){
+      if(child instanceof THREE.Mesh){
+        child.material.wireframe = !child.material.wireframe;
+      }
+    });
+  }
 }
 
 class Arm extends THREE.Object3D {
@@ -136,6 +145,12 @@ class Arm extends THREE.Object3D {
     this.add(new Box([pos[0]+5, pos[1]+18, pos[2]], [10, 2, 2]));
     this.add(new Sphere([pos[0]+12, pos[1]+18, pos[2]], [2.5, 32, 32]));
   }
+
+  changeVisibility(){
+    this.children.forEach(function(child){
+        child.changeVisibility()
+    });
+  }
 }
 
 class Hand extends THREE.Object3D {
@@ -147,6 +162,12 @@ class Hand extends THREE.Object3D {
     this.add(new Box([pos[0]+17.5, pos[1]+20.5, pos[2]], [4,1,1]));
     this.add(new Box([pos[0]+17.5, pos[1]+15.5, pos[2]], [4,1,1]));
   }
+
+  changeVisibility(){
+    this.children.forEach(function(child){
+        child.changeVisibility()
+    });
+  }
 }
 
 class ForeArm extends THREE.Object3D {
@@ -156,6 +177,12 @@ class ForeArm extends THREE.Object3D {
     super();
     this.add(new Arm(pos));
     this.add(new Hand(pos));
+  }
+
+  changeVisibility(){
+    this.children.forEach(function(child){
+        child.changeVisibility()
+    });
   }
 }
 
@@ -172,6 +199,14 @@ class Cylinder extends THREE.Object3D {
     mesh.position.set(pos[0], pos[1], pos[2]);
     this.add(mesh);
   }
+
+  changeVisibility(){
+    this.children.forEach(function(child){
+      if(child instanceof THREE.Mesh){
+        child.material.wireframe = !child.material.wireframe;
+      }
+    });
+  }
 }
 
 class Torus extends THREE.Object3D {
@@ -187,6 +222,14 @@ class Torus extends THREE.Object3D {
     mesh.position.set(pos[0], pos[1], pos[2]);
     this.add(mesh);
   }
+
+  changeVisibility(){
+    this.children.forEach(function(child){
+      if(child instanceof THREE.Mesh){
+        child.material.wireframe = !child.material.wireframe;
+      }
+    });
+  }
 }
 
 class Pedestal extends THREE.Object3D {
@@ -196,5 +239,11 @@ class Pedestal extends THREE.Object3D {
     super();
     this.add(new Cylinder([pos[0]+30, pos[1]+4, pos[2]], [3,3,20,64]));
     this.add(new Torus([pos[0]+30, pos[1]+17.6, pos[2]], [2.5,1,30,20]));
+  }
+
+  changeVisibility(){
+    this.children.forEach(function(child){
+        child.changeVisibility()
+    });
   }
 }

@@ -18,6 +18,7 @@ function Environment() {
     /*add event listeners here*/
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('keypress', onKeyPress);
     //window.addEventListener('resize', onResize);
 
     render();
@@ -176,14 +177,6 @@ function Environment() {
         changeCamera(50, 0, 0);
         break;
 
-      case 52: // "4"
-        _scene.traverse(function (node){
-          if (node instanceof THREE.Mesh){
-            node.material.wireframe = !node.material.wireframe;
-          }
-        });
-        break;
-
       default:
         break;
     }
@@ -224,6 +217,18 @@ function Environment() {
       case 87: // "W"
         _robot.userData.moveArmFoward = false;
         break;
+    }
+  }
+
+  function onKeyPress(e){
+    'use strict';
+
+    if (e.keyCode === 52){ // "4"
+      _scene.traverse(function (node){
+        if (node instanceof THREE.Mesh){
+          node.material.wireframe = !node.material.wireframe;
+        }
+      });
     }
   }
 }

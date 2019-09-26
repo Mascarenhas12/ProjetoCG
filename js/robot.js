@@ -1,5 +1,6 @@
 class Robot extends THREE.Object3D {
   'use strict';
+
   constructor(pos){
     super();
 
@@ -27,11 +28,41 @@ class Robot extends THREE.Object3D {
   }
 }
 
+class Base extends THREE.Object3D {
+  constructor(pos){
+    super();
+    this.add(new Box([pos[0], pos[1], pos[2]], [16,2,12]));
+    this.add(new Box([pos[0]-10, pos[1], pos[2]], [4,4,16]))
+    this.add(new Box([pos[0]+10, pos[1], pos[2]], [4,4,16]))
+    this.add(new Sphere([pos[0]+10, pos[1]-4, pos[2]+6], [2,20,20]))
+    this.add(new Sphere([pos[0]+10, pos[1]-4, pos[2]-6], [2,20,20]))
+    this.add(new Sphere([pos[0]-10, pos[1]-4, pos[2]+6], [2,20,20]))
+    this.add(new Sphere([pos[0]-10, pos[1]-4, pos[2]-6], [2,20,20]))
+  }
+
+  moveWheels() {
+
+  }
+}
+
+class Body extends THREE.Object3D {
+  constructor(pos){
+    super();
+    this.add(new Sphere([pos[0], pos[1]+1, pos[2]], [6, 20, 20, 0 ,2*Math.PI, 0, 0.5 * Math.PI]));
+    this.forearm = new ForeArm(pos);
+    this.add(this.forearm);
+  }
+
+  moveArm(angle){
+    this.forearm.rotateZ(angle);
+  }
+}
+
 class Box extends THREE.Object3D {
   constructor(pos, dim){
     super();
     var mesh = new THREE.Mesh(
-      new THREE.CubeGeometry(dim[0], dim[1], dim[2]),
+      new THREE.CubeGeometry(dim[0], dim[1], dim[2], 4, 4, 4),
       new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true })
     );
 
@@ -55,23 +86,6 @@ class Sphere extends THREE.Object3D {
 
     this.add(mesh);
     this.position.set(pos[0], pos[1], pos[2]);
-  }
-}
-
-class Base extends THREE.Object3D {
-  constructor(pos){
-    super();
-    this.add(new Box([pos[0], pos[1], pos[2]], [16,2,12]));
-    this.add(new Box([pos[0]-10, pos[1], pos[2]], [4,4,16]))
-    this.add(new Box([pos[0]+10, pos[1], pos[2]], [4,4,16]))
-    this.add(new Sphere([pos[0]+10, pos[1]-4, pos[2]+6], [2,20,20]))
-    this.add(new Sphere([pos[0]+10, pos[1]-4, pos[2]-6], [2,20,20]))
-    this.add(new Sphere([pos[0]-10, pos[1]-4, pos[2]+6], [2,20,20]))
-    this.add(new Sphere([pos[0]-10, pos[1]-4, pos[2]-6], [2,20,20]))
-  }
-
-  moveWheels() {
-
   }
 }
 
@@ -99,19 +113,6 @@ class ForeArm extends THREE.Object3D {
     super();
     this.add(new Arm(pos));
     this.add(new Hand(pos));
-  }
-}
-
-class Body extends THREE.Object3D {
-  constructor(pos){
-    super();
-    this.add(new Sphere([pos[0], pos[1]+1, pos[2]], [6, 20, 20, 0 ,2*Math.PI, 0, 0.5 * Math.PI]));
-    this.forearm = new ForeArm(pos);
-    this.add(this.forearm);
-  }
-
-  moveArm(angle){
-    this.forearm.rotateZ(angle);
   }
 }
 
@@ -145,6 +146,6 @@ class Pedestal extends THREE.Object3D {
   constructor(pos){
     super();
     this.add(new Cylinder([pos[0]+30,pos[1]+4,pos[2]], [3,3,20,64]));
-    this.add(new Torus([pos[0]+30,pos[1]+17.6,pos[2]], [2.5,1,30,200]));
+    this.add(new Torus([pos[0]+30,pos[1]+17.6,pos[2]], [2.5,1,30,20]));
   }
 }

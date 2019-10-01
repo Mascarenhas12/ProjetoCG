@@ -160,17 +160,14 @@ function Environment() {
 
       case 49: // "1"
         _currentCamera = camera1;
-        render();
         break;
 
       case 50: // "2"
         _currentCamera = camera2;
-        render();
         break;
 
       case 51: // "3"
         _currentCamera = camera3;
-        render();
         break;
 
       case 52: // "4"

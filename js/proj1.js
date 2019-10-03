@@ -5,22 +5,24 @@ function main() {
 function Environment() {
   'use strict'
 
+  var _clock = new THREE.Clock(true);
+
   var _robot = new Robot([0,0,0]);
   var _pedestal = new Pedestal([0,0,0]);
 
   var _scene = createScene();
   var _renderer = createRenderer();
-  var camera1 = createCamera(0, 50, 0);
-  var camera2 = createCamera(0, 0, 50);
-  var camera3 = createCamera(50, 0, 0);
-  var _currentCamera = camera1;
+
+  var _camera1 = createCamera(0, 50, 0);
+  var _camera2 = createCamera(0, 0, 50);
+  var _camera3 = createCamera(50, 0, 0);
+  var _currentCamera = _camera1;
 
   this.start = function() {
     'use strict'
 
     document.body.appendChild(_renderer.domElement);
 
-    /* add event listeners here */
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
     //window.addEventListener('resize', onResize);
@@ -82,47 +84,49 @@ function Environment() {
     requestAnimationFrame(animate);
   }
 
-  function update(){
-     'use strict'
+  function update() {
+		'use strict'
 
-     if (_robot.userData.movingLeft) {
-       _robot.translateZ(-0.5);
-     }
-     if (_robot.userData.movingFoward) {
-       _robot.translateX(0.5);
-     }
-     if (_robot.userData.movingRight) {
-       _robot.translateZ(0.5);
-     }
-     if (_robot.userData.movingBackward) {
-       _robot.translateX(-0.5);
-     }
-     if (_robot.userData.rotateLeft) {
-       _robot.rotateArm(Math.PI/32);
-     }
-     if (_robot.userData.rotateRight) {
-       _robot.rotateArm(-Math.PI/32);
-     }
-     if (_robot.userData.moveArmBackward) {
-       if (_robot.userData.currRotation < Math.PI/2.8) {
-         _robot.userData.currRotation += Math.PI/32;
-         _robot.moveArm(Math.PI/32);
-       }
-     }
-     if (_robot.userData.moveArmFoward) {
-       if (_robot.userData.currRotation > -Math.PI/3.5) {
-         _robot.userData.currRotation -= Math.PI/32;
-         _robot.moveArm(-Math.PI/32);
-       }
-     }
+		var deltaTime = _clock.getDelta();
+
+		if (_robot.userData.movingLeft) {
+			_robot.translateZ(-10 * deltaTime);
+		}
+		if (_robot.userData.movingFoward) {
+			_robot.translateX(10 * deltaTime);
+		}
+		if (_robot.userData.movingRight) {
+			_robot.translateZ(10 * deltaTime);
+		}
+		if (_robot.userData.movingBackward) {
+			_robot.translateX(-10 * deltaTime);
+		}
+		if (_robot.userData.rotateLeft) {
+			_robot.rotateArm(Math.PI/8 * deltaTime);
+		}
+		if (_robot.userData.rotateRight) {
+			_robot.rotateArm(-Math.PI/8 * deltaTime);
+		}
+		if (_robot.userData.moveArmBackward) {
+		 	if (_robot.userData.currRotation < Math.PI/3.5) {
+		  	_robot.userData.currRotation += Math.PI/8 * deltaTime;
+		  	_robot.moveArm(Math.PI/8 * deltaTime);
+		 	}
+		}
+		if (_robot.userData.moveArmFoward) {
+			if (_robot.userData.currRotation > -Math.PI/3.5) {
+				_robot.userData.currRotation -= Math.PI/8 * deltaTime;
+				_robot.moveArm(-Math.PI/8 * deltaTime);
+			}
+		}
   }
 
-  function render(){
+  function render() {
     'use strict'
     _renderer.render(_scene,_currentCamera);
   }
 
-  function onKeyDown(e){
+  function onKeyDown(e) {
     'use strict';
 
     switch(e.keyCode){
@@ -159,15 +163,15 @@ function Environment() {
         break;
 
       case 49: // "1"
-        _currentCamera = camera1;
+        _currentCamera = _camera1;
         break;
 
       case 50: // "2"
-        _currentCamera = camera2;
+        _currentCamera = _camera2;
         break;
 
       case 51: // "3"
-        _currentCamera = camera3;
+        _currentCamera = _camera3;
         break;
 
       case 52: // "4"
@@ -183,7 +187,7 @@ function Environment() {
     }
   }
 
-  function onKeyUp(e){
+  function onKeyUp(e) {
     'use strict';
 
     switch(e.keyCode){

@@ -14,7 +14,7 @@ class Box extends THREE.Object3D {
 
   changeVisibility(){
     this.children.forEach(function(child){
-      if(child instanceof THREE.Mesh){
+      if (child instanceof THREE.Mesh){
         child.material.wireframe = !child.material.wireframe;
       }
     });
@@ -42,7 +42,7 @@ class Sphere extends THREE.Object3D {
 
   changeVisibility(){
     this.children.forEach(function(child){
-      if(child instanceof THREE.Mesh){
+      if (child instanceof THREE.Mesh){
         child.material.wireframe = !child.material.wireframe;
       }
     });
@@ -160,7 +160,7 @@ class Robot extends THREE.Object3D {
     this.userData.moveArmFoward = false;
     this.userData.currRotation = 0;
 
-    this.userData.unlockVisibility = true; // So podes tar a trolar!!!!!
+    this.userData.unlockVisibility = true;
 
     this.base = new Base(pos)
     this.body = new Body(pos);

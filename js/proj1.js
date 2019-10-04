@@ -90,7 +90,8 @@ function Environment() {
 		var deltaTime = _clock.getDelta();
 
 		if (_robot.userData.movingLeft) {
-			_robot.translateZ(-10 * deltaTime);
+			_robot.position += 10 * deltaTime;
+			//_robot.translateZ(-10 * deltaTime);
 		}
 		if (_robot.userData.movingFoward) {
 			_robot.translateX(10 * deltaTime);

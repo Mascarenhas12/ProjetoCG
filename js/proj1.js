@@ -90,17 +90,52 @@ function Environment() {
 		var deltaTime = _clock.getDelta();
 
 		if (_robot.userData.movingLeft) {
-			_robot.position += 10 * deltaTime;
 			//_robot.translateZ(-10 * deltaTime);
+
+      //_robot.moveZ(-1, 10, deltaTime);
+      var trnsformMatrix = new THREE.Matrix4();
+      trnsformMatrix.set(1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, -10 * deltaTime,
+            0, 0, 0, 1);
+
+      _robot.move(trnsformMatrix);
 		}
 		if (_robot.userData.movingFoward) {
-			_robot.translateX(10 * deltaTime);
+			//_robot.translateX(10 * deltaTime);
+
+      //_robot.moveX(1, 10, deltaTime);
+      var trnsformMatrix = new THREE.Matrix4();
+      trnsformMatrix.set(1, 0, 0, 10 * deltaTime,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1);
+
+      _robot.move(trnsformMatrix);
 		}
 		if (_robot.userData.movingRight) {
-			_robot.translateZ(10 * deltaTime);
+			//_robot.translateZ(10 * deltaTime);
+
+      //_robot.moveZ(1, 10, deltaTime);
+      var trnsformMatrix = new THREE.Matrix4();
+      trnsformMatrix.set(1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 10 * deltaTime,
+            0, 0, 0, 1);
+
+      _robot.move(trnsformMatrix);
 		}
 		if (_robot.userData.movingBackward) {
-			_robot.translateX(-10 * deltaTime);
+			//_robot.translateX(-10 * deltaTime);
+
+      //_robot.moveX(-1, 10, deltaTime);
+      var trnsformMatrix = new THREE.Matrix4();
+      trnsformMatrix.set(1, 0, 0, -10 * deltaTime,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1);
+
+      _robot.move(trnsformMatrix);
 		}
 		if (_robot.userData.rotateLeft) {
 			_robot.rotateArm(Math.PI/8 * deltaTime);

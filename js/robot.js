@@ -170,16 +170,13 @@ class Robot extends THREE.Object3D {
     this.add(this.body);
   }
 
-  move(trnsformMatrix){
-    this.applyMatrix(trnsformMatrix);
-  }
-
-  moveX(direction, v, scalar){
-    this.position.x += direction * v * scalar;
-  }
-
-  moveZ(direction, v, scalar){
-    this.position.z += direction * v * scalar;
+  move(direction, v, scalar,eixo){
+    if(eixo=='x'){
+      this.position.x += direction * v * scalar;
+    }
+    else{
+      this.position.z += direction * v * scalar;
+    }
   }
 
   rotateArm(angle){

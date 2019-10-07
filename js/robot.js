@@ -174,7 +174,7 @@ class Robot extends THREE.Object3D {
     if(eixo=='x'){
       this.position.x += direction * v * scalar;
     }
-    else{
+    if (eixo=='z'){
       this.position.z += direction * v * scalar;
     }
   }

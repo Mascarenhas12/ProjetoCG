@@ -1,4 +1,3 @@
-
 class Cylinder extends THREE.Object3D {
   'use strict';
 

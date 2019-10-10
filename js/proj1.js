@@ -88,16 +88,20 @@ function Environment() {
 		var deltaTime = _clock.getDelta();
 
 		if (_robot.userData.movingLeft) {
-      _robot.move(-1, 10, deltaTime,'z');
+			_robot.userData.velocity.z = -1;
+			_robot.move(10, deltaTime);
 		}
 		if (_robot.userData.movingFoward) {
-      _robot.move(1, 10, deltaTime,'x');
+			_robot.userData.velocity.x = 1;
+			_robot.move(10, deltaTime);
 		}
 		if (_robot.userData.movingRight) {
-			_robot.move(1, 10, deltaTime,'z');
-    }
+			_robot.userData.velocity.z = 1;
+			_robot.move(10, deltaTime);
+		}
 		if (_robot.userData.movingBackward) {
-      _robot.move(-1, 10, deltaTime,'x');
+			_robot.userData.velocity.x = -1;
+			_robot.move(10, deltaTime);
 		}
 		if (_robot.userData.rotateLeft) {
 			_robot.rotateArm(Math.PI/8 * deltaTime);

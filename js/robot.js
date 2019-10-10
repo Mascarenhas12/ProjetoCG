@@ -149,6 +149,8 @@ class Robot extends THREE.Object3D {
   constructor(pos){
     super();
 
+    this.userData.velocity = new THREE.Vector3(0,0,0);
+
     this.userData.movingLeft = false;
     this.userData.movingFoward = false;
     this.userData.movingRight = false;
@@ -161,7 +163,6 @@ class Robot extends THREE.Object3D {
     this.userData.currRotation = 0;
 
     this.userData.unlockVisibility = true;
-    this.userData.direction = new THREE.Vector3(0,0,0);
 
     this.base = new Base(pos)
     this.body = new Body(pos);
@@ -170,13 +171,14 @@ class Robot extends THREE.Object3D {
     this.add(this.body);
   }
 
-  move(direction, v, scalar,eixo){
-    if(eixo=='x'){
-      this.position.x += direction * v * scalar;
-    }
-    if (eixo=='z'){
-      this.position.z += direction * v * scalar;
-    }
+  move(scalar, deltaTime){
+  	this.userData.velocity.normalize();
+
+    this.position.x += scalar * this.userData.velocity.x * deltaTime;
+    this.position.z += scalar * this.userData.velocity.z * deltaTime;
+
+    this.userData.velocity.x = 0;
+    this.userData.velocity.z = 0;
   }
 
   rotateArm(angle){

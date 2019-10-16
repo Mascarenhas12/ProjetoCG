@@ -7,8 +7,10 @@ function Environment() {
 
   var _clock = new THREE.Clock(true);
 
-  var cannon = new Cannon([0,0,0]);
-  //var cannons = [new Cannon([,,],[,,,]),new Cannon([,,],[,,,]),new Cannon([,,],[,,,])];
+  var _currCannon = new Cannon([0,0,0]);
+  var _bullets = [];
+
+  //var _currCannons = [new _currCannon([,,],[,,,]),new _currCannon([,,],[,,,]),new _currCannon([,,],[,,,])];
 
   var _scene = createScene();
   var _renderer = createRenderer();
@@ -25,6 +27,7 @@ function Environment() {
 
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('resize', onResize);
 
     animate();
   }
@@ -35,7 +38,7 @@ function Environment() {
       var scene = new THREE.Scene();
       scene.add(new THREE.AxisHelper(10));
 
-      scene.add(cannon);
+      scene.add(_currCannon);
 
       return scene;
   }
@@ -69,7 +72,7 @@ function Environment() {
     var ratio = window.innerWidth / window.innerHeight;
     var view = 50;
 
-    var camera = new THREE.PerspectiveCamera(45, width/height, 1, 1000);
+    var camera = new THREE.PerspectiveCamera(view, ratio, 1, 1000);
 
     camera.position.x = x;
     camera.position.y = y;
@@ -104,6 +107,44 @@ function Environment() {
 
 		var deltaTime = _clock.getDelta();
 
+    if (_currCannon.userData.fire) {
+      _currCannon.userData.fire = false;
+
+      var vector = new THREE.Vector3();
+      _currentCamera.getWorldDirection(vector);
+      console.log(vector);
+      var bullet = new Bullet([Math.sin(_currCannon.userData.currRotation)*14, 0, -13*Math.cos(_currCannon.userData.currRotation)],[Math.sin(_currCannon.userData.currRotation), Math.cos(_currCannon.userData.currRotation)]);
+
+      _bullets.push(bullet);
+      _scene.add(bullet);
+      _currCannon.fire(bullet);
+    }
+
+    if(_currCannon.userData.bullet){
+      //_bullets.forEach((node)=>{node.move()});
+    }
+      /*
+      // cof much better cof
+      var bullet = _currCannon.betterFire();
+
+      _bullets.push(bullet);
+      _scene.add(bullet);
+    }
+    /*
+    _bullets.forEach((node) => {
+      node.move();
+    });*/
+
+    if (_currCannon.userData.rotateLeft && _currCannon.userData.currRotation < Math.PI/4) {
+      _currCannon.rotate(Math.PI/8 * deltaTime);
+      _currCannon.userData.currRotation += Math.PI/8 * deltaTime;
+    }
+    if (_currCannon.userData.rotateRight&& _currCannon.userData.currRotation > -Math.PI/4) {
+      _currCannon.rotate(-Math.PI/8 * deltaTime);
+      _currCannon.userData.currRotation -= Math.PI/8 * deltaTime;
+    }
+  }
+
   function render() {
     'use strict'
     _renderer.render(_scene,_currentCamera);
@@ -113,35 +154,31 @@ function Environment() {
     'use strict';
 
     switch(e.keyCode){
-      case 37: // "LEFT"
-        _
+      case 32: // "SPACEBAR"
+        if (_currCannon.userData.unlockFiring) {
+          _currCannon.userData.unlockFiring = false;
+          _currCannon.userData.fire = true;
+          _currCannon.userData.bullet = true;
+        }
         break;
 
-      case 38: // "FOWARD"
-
+      case 37: // "LEFT"
+        _currCannon.userData.rotateLeft = true;
         break;
 
       case 39: // "RIGHT"
-
-        break;
-
-      case 40: // "BACKWARD"
-
+        _currCannon.userData.rotateRight = true;
         break;
 
       case 65: // "A"
 
         break;
 
-      case 83: // "S"
+      case 69: // "E"
 
         break;
 
       case 81: // "Q"
-
-        break;
-
-      case 87: // "W"
 
         break;
 
@@ -157,10 +194,6 @@ function Environment() {
         _currentCamera = _camera3;
         break;
 
-      case 52: // "4"
-
-        break;
-
       default:
         break;
     }
@@ -170,31 +203,23 @@ function Environment() {
     'use strict';
 
     switch(e.keyCode){
-      case 37: // "LEFT"
-
+      case 32: // "SPACEBAR"
+        _currCannon.userData.unlockFiring = true;
         break;
 
-      case 38: // "FOWARD"
-
+      case 37: // "LEFT"
+        _currCannon.userData.rotateLeft = false;
         break;
 
       case 39: // "RIGHT"
-
-        break;
-
-      case 40: // "BACKWARD"
-
-        break;
-
-      case 52: // "4"
-
+        _currCannon.userData.rotateRight = false;
         break;
 
       case 65: // "A"
 
         break;
 
-      case 83: // "S"
+      case 69: // "E"
 
         break;
 
@@ -202,12 +227,26 @@ function Environment() {
 
         break;
 
-      case 87: // "W"
-
-        break;
-
       default:
         break;
     }
+  }
+
+  function onResize(e) {
+    'use strict';
+
+    //_currentCamera.aspect = window.innerWidth / window.innerHeight;
+    //_currentCamera.updateProjectionMatrix();
+
+    _renderer.setSize(window.innerWidth, window.innerHeight);
+
+    if (window.innerWidth > 0 && window.innerHeight > 0) {
+      _currentCamera.aspect = _renderer.getSize().width / _renderer.getSize().height;
+      _currentCamera.updateProjectionMatrix();
+    }
+
+    //_renderer.setSize(window.innerWidth, window.innerHeight);
+
+    render();
   }
 }

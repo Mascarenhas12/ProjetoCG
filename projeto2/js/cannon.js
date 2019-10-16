@@ -34,7 +34,7 @@ class Cannon extends THREE.Object3D {
   }
 
   fire(bullet) {
-    bullet.rotateY(this.userData.currRotation);
+    bullet.rotateZ(this.userData.currRotation);
     bullet.move(0);
   }
 

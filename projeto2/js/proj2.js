@@ -110,18 +110,14 @@ function Environment() {
     if (_currCannon.userData.fire) {
       _currCannon.userData.fire = false;
 
-      var vector = new THREE.Vector3();
-      _currentCamera.getWorldDirection(vector);
-      console.log(vector);
       var bullet = new Bullet([Math.sin(_currCannon.userData.currRotation)*14, 0, -13*Math.cos(_currCannon.userData.currRotation)],[Math.sin(_currCannon.userData.currRotation), Math.cos(_currCannon.userData.currRotation)]);
-
       _bullets.push(bullet);
       _scene.add(bullet);
       _currCannon.fire(bullet);
     }
 
     if(_currCannon.userData.bullet){
-      //_bullets.forEach((node)=>{node.move()});
+      _bullets.forEach((node)=>{node.move()});
     }
       /*
       // cof much better cof

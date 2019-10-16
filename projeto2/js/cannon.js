@@ -1,3 +1,16 @@
+class Fence extends THREE.Object3D {
+  'use strict';
+
+  constructor(pos) {
+    super();
+
+    this.add(new Box(pos, []));
+    this.add(new Box(pos, []));
+    this.add(new Box(pos, []));
+  }
+
+}
+
 class Cannon extends THREE.Object3D {
   'use strict';
 
@@ -35,7 +48,7 @@ class Cannon extends THREE.Object3D {
 
   fire(bullet) {
     bullet.rotateZ(this.userData.currRotation);
-    bullet.move(0);
+    bullet.move();
   }
 
   betterFire() {
@@ -50,18 +63,26 @@ class Cannon extends THREE.Object3D {
 class Bullet extends THREE.Object3D {
   'use strict';
 
-  constructor(pos,dir) {
+  constructor(pos, dir) {
     super();
 
-    this.userData.velocity = 1;
+    this.userData.velocity = 1.5;
+    this.userData.friction = 0.01;
     this.userData.direction = dir;
 
     this.add(new Sphere([pos[0],pos[1],pos[2]], [3,32,32]));
     this.add(new THREE.AxisHelper(10));
   }
 
-  move(friction) {
-    this.position.x += this.userData.velocity*Math.sin(this.userData.direction[0]);
-    this.position.z -= this.userData.velocity*Math.cos(this.userData.direction[1]);
+  move() {
+    this.position.x += this.userData.velocity * this.userData.direction[0];
+    this.position.z -= this.userData.velocity * this.userData.direction[1];
+
+    if (this.userData.velocity - this.userData.friction < 0) {
+      this.userData.velocity = 0;
+    }
+    else {
+      this.userData.velocity -= this.userData.friction;
+    }
   }
 }

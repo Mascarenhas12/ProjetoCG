@@ -7,10 +7,10 @@ function Environment() {
 
   var _clock = new THREE.Clock(true);
 
-  var _currCannon = new Cannon([0,0,0]);
+  var _fence = new Fence([0,0,-30]);
+  var _cannons = [new Cannon([0,20,0]), new Cannon([20,20,0]), new Cannon([-20,20,0])];
+  var _currCannon = _cannons[0];
   var _bullets = [];
-
-  //var _currCannons = [new _currCannon([,,],[,,,]),new _currCannon([,,],[,,,]),new _currCannon([,,],[,,,])];
 
   var _scene = createScene();
   var _renderer = createRenderer();
@@ -38,7 +38,7 @@ function Environment() {
       var scene = new THREE.Scene();
       scene.add(new THREE.AxisHelper(10));
 
-      scene.add(_currCannon);
+      _cannons.forEach((node)=>{scene.add(node)});
 
       return scene;
   }
@@ -47,7 +47,7 @@ function Environment() {
     'use strict';
 
     var ratio = window.innerWidth / window.innerHeight;
-    var view = 50;
+    var view = 150;
 
     var camera = new THREE.OrthographicCamera(
       ratio*view / - 2,
@@ -110,13 +110,24 @@ function Environment() {
     if (_currCannon.userData.fire) {
       _currCannon.userData.fire = false;
 
-      var bullet = new Bullet([Math.sin(_currCannon.userData.currRotation)*14, 0, -13*Math.cos(_currCannon.userData.currRotation)],[Math.sin(_currCannon.userData.currRotation), Math.cos(_currCannon.userData.currRotation)]);
+      var bullet = new Bullet(
+        [
+          Math.sin(_currCannon.userData.currRotation)*14,
+          0,
+          -13*Math.cos(_currCannon.userData.currRotation)
+        ],
+        [
+          Math.sin(_currCannon.userData.currRotation),
+          Math.cos(_currCannon.userData.currRotation)
+        ]
+      );
+
       _bullets.push(bullet);
       _scene.add(bullet);
       _currCannon.fire(bullet);
     }
 
-    if(_currCannon.userData.bullet){
+    if (_currCannon.userData.bullet) {
       _bullets.forEach((node)=>{node.move()});
     }
       /*
@@ -131,13 +142,13 @@ function Environment() {
       node.move();
     });*/
 
-    if (_currCannon.userData.rotateLeft && _currCannon.userData.currRotation < Math.PI/4) {
-      _currCannon.rotate(Math.PI/8 * deltaTime);
-      _currCannon.userData.currRotation += Math.PI/8 * deltaTime;
-    }
-    if (_currCannon.userData.rotateRight&& _currCannon.userData.currRotation > -Math.PI/4) {
+    if (_currCannon.userData.rotateLeft && _currCannon.userData.currRotation > -Math.PI/4) {
       _currCannon.rotate(-Math.PI/8 * deltaTime);
       _currCannon.userData.currRotation -= Math.PI/8 * deltaTime;
+    }
+    if (_currCannon.userData.rotateRight && _currCannon.userData.currRotation < Math.PI/4) {
+      _currCannon.rotate(Math.PI/8 * deltaTime);
+      _currCannon.userData.currRotation += Math.PI/8 * deltaTime;
     }
   }
 

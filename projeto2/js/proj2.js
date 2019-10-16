@@ -3,22 +3,23 @@ function main() {
 }
 
 function Environment() {
-  'use strict'
+  'use strict';
 
   var _clock = new THREE.Clock(true);
 
-  var cannons = [new Cannon([,,],[,,,]),new Cannon[,,],[,,,]),new Cannon([,,],[,,,])];
+  var cannon = new Cannon([0,0,0]);
+  //var cannons = [new Cannon([,,],[,,,]),new Cannon([,,],[,,,]),new Cannon([,,],[,,,])];
 
   var _scene = createScene();
   var _renderer = createRenderer();
 
-  var _camera1 = createCamera(0, 50, 0);
-  var _camera2 = createCamera(0, 0, 50);
+  var _camera1 = createOrtogonalCamera(0, 50, 0);
+  var _camera2 = createPerpectiveCamera(0, 0, 50);
   //var _camera3 = createCamera(50, 0, 0);
   var _currentCamera = _camera1;
 
   this.start = function() {
-    'use strict'
+    'use strict';
 
     document.body.appendChild(_renderer.domElement);
 
@@ -34,29 +35,48 @@ function Environment() {
       var scene = new THREE.Scene();
       scene.add(new THREE.AxisHelper(10));
 
+      scene.add(cannon);
+
       return scene;
   }
 
-  function createCamera(x, y, z) {
-      'use strict';
+  function createOrtogonalCamera(x, y, z) {
+    'use strict';
 
-      var ratio = window.innerWidth / window.innerHeight;
-      var view = 50;
+    var ratio = window.innerWidth / window.innerHeight;
+    var view = 50;
 
-      var camera = new THREE.OrthographicCamera(
-        ratio*view / - 2,
-        ratio*view / 2,
-        view / 2,
-        view / - 2,
-        -1000,
-        1000
-      );
+    var camera = new THREE.OrthographicCamera(
+      ratio*view / - 2,
+      ratio*view / 2,
+      view / 2,
+      view / - 2,
+      -1000,
+      1000
+    );
 
-      camera.position.x = x;
-      camera.position.y = y;
-      camera.position.z = z;
-      camera.lookAt(_scene.position);
-      return camera;
+    camera.position.x = x;
+    camera.position.y = y;
+    camera.position.z = z;
+    camera.lookAt(_scene.position);
+
+    return camera;
+  }
+
+  function createPerpectiveCamera(x, y, z) {
+    'use strict';
+
+    var ratio = window.innerWidth / window.innerHeight;
+    var view = 50;
+
+    var camera = new THREE.PerspectiveCamera(45, width/height, 1, 1000);
+
+    camera.position.x = x;
+    camera.position.y = y;
+    camera.position.z = z;
+    camera.lookAt(_scene.position);
+
+    return camera;
   }
 
   function createRenderer() {
@@ -84,40 +104,6 @@ function Environment() {
 
 		var deltaTime = _clock.getDelta();
 
-		if (_robot.userData.movingLeft) {
-			_robot.userData.velocity.z = -1;
-		}
-		if (_robot.userData.movingFoward) {
-			_robot.userData.velocity.x = 1;
-		}
-		if (_robot.userData.movingRight) {
-			_robot.userData.velocity.z = 1;
-		}
-		if (_robot.userData.movingBackward) {
-			_robot.userData.velocity.x = -1;
-		}
-    _robot.move(10, deltaTime);
-
-		if (_robot.userData.rotateLeft) {
-			_robot.rotateArm(Math.PI/8 * deltaTime);
-		}
-		if (_robot.userData.rotateRight) {
-			_robot.rotateArm(-Math.PI/8 * deltaTime);
-		}
-		if (_robot.userData.moveArmBackward) {
-		 	if (_robot.userData.currRotation < Math.PI/3.5) {
-		  	_robot.userData.currRotation += Math.PI/8 * deltaTime;
-		  	_robot.moveArm(Math.PI/8 * deltaTime);
-		 	}
-		}
-		if (_robot.userData.moveArmFoward) {
-			if (_robot.userData.currRotation > -Math.PI/3.5) {
-				_robot.userData.currRotation -= Math.PI/8 * deltaTime;
-				_robot.moveArm(-Math.PI/8 * deltaTime);
-			}
-		}
-  }
-
   function render() {
     'use strict'
     _renderer.render(_scene,_currentCamera);
@@ -128,35 +114,35 @@ function Environment() {
 
     switch(e.keyCode){
       case 37: // "LEFT"
-        _robot.userData.movingLeft = true;
+        _
         break;
 
       case 38: // "FOWARD"
-        _robot.userData.movingFoward = true;
+
         break;
 
       case 39: // "RIGHT"
-        _robot.userData.movingRight = true;
+
         break;
 
       case 40: // "BACKWARD"
-        _robot.userData.movingBackward = true;
+
         break;
 
       case 65: // "A"
-        _robot.userData.rotateLeft = true;
+
         break;
 
       case 83: // "S"
-        _robot.userData.rotateRight = true;
+
         break;
 
       case 81: // "Q"
-        _robot.userData.moveArmBackward = true;
+
         break;
 
       case 87: // "W"
-        _robot.userData.moveArmFoward = true;
+
         break;
 
       case 49: // "1"
@@ -172,11 +158,7 @@ function Environment() {
         break;
 
       case 52: // "4"
-        if (_robot.userData.unlockVisibility){
-          _robot.userData.unlockVisibility = false;
-          _robot.changeVisibility();
-          _pedestal.changeVisibility();
-        }
+
         break;
 
       default:
@@ -189,39 +171,39 @@ function Environment() {
 
     switch(e.keyCode){
       case 37: // "LEFT"
-        _robot.userData.movingLeft = false;
+
         break;
 
       case 38: // "FOWARD"
-        _robot.userData.movingFoward = false;
+
         break;
 
       case 39: // "RIGHT"
-        _robot.userData.movingRight = false;
+
         break;
 
       case 40: // "BACKWARD"
-        _robot.userData.movingBackward = false;
+
         break;
 
       case 52: // "4"
-        _robot.userData.unlockVisibility = true;
+
         break;
 
       case 65: // "A"
-        _robot.userData.rotateLeft = false;
+
         break;
 
       case 83: // "S"
-        _robot.userData.rotateRight = false;
+
         break;
 
       case 81: // "Q"
-        _robot.userData.moveArmBackward = false;
+
         break;
 
       case 87: // "W"
-        _robot.userData.moveArmFoward = false;
+
         break;
 
       default:

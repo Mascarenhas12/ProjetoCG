@@ -63,10 +63,10 @@ class Cylinder extends THREE.Object3D {
     this.add(mesh);
   }
 
-  changeVisibility(){
+  changeColor(color){
     this.children.forEach(function(child){
       if(child instanceof THREE.Mesh){
-        child.material.wireframe = !child.material.wireframe;
+        child.material.color = color;
       }
     });
   }

@@ -89,20 +89,18 @@ function Environment() {
 
 		if (_robot.userData.movingLeft) {
 			_robot.userData.velocity.z = -1;
-			_robot.move(10, deltaTime);
 		}
 		if (_robot.userData.movingFoward) {
 			_robot.userData.velocity.x = 1;
-			_robot.move(10, deltaTime);
 		}
 		if (_robot.userData.movingRight) {
 			_robot.userData.velocity.z = 1;
-			_robot.move(10, deltaTime);
 		}
 		if (_robot.userData.movingBackward) {
 			_robot.userData.velocity.x = -1;
-			_robot.move(10, deltaTime);
 		}
+    _robot.move(10, deltaTime);
+    
 		if (_robot.userData.rotateLeft) {
 			_robot.rotateArm(Math.PI/8 * deltaTime);
 		}

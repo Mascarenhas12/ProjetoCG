@@ -7,15 +7,14 @@ function Environment() {
 
   var _clock = new THREE.Clock(true);
 
-  var _robot = new Robot([0,0,0]);
-  var _pedestal = new Pedestal([0,0,0]);
+  var cannons = [new Cannon([,,],[,,,]),new Cannon[,,],[,,,]),new Cannon([,,],[,,,])];
 
   var _scene = createScene();
   var _renderer = createRenderer();
 
   var _camera1 = createCamera(0, 50, 0);
   var _camera2 = createCamera(0, 0, 50);
-  var _camera3 = createCamera(50, 0, 0);
+  //var _camera3 = createCamera(50, 0, 0);
   var _currentCamera = _camera1;
 
   this.start = function() {
@@ -25,7 +24,7 @@ function Environment() {
 
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
-    
+
     animate();
   }
 
@@ -34,8 +33,6 @@ function Environment() {
 
       var scene = new THREE.Scene();
       scene.add(new THREE.AxisHelper(10));
-      scene.add(_robot);
-      scene.add(_pedestal);
 
       return scene;
   }
@@ -100,7 +97,7 @@ function Environment() {
 			_robot.userData.velocity.x = -1;
 		}
     _robot.move(10, deltaTime);
-    
+
 		if (_robot.userData.rotateLeft) {
 			_robot.rotateArm(Math.PI/8 * deltaTime);
 		}

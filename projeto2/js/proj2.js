@@ -7,8 +7,8 @@ function Environment() {
 
   var _clock = new THREE.Clock(true);
 
-  var _fence = new Fence([0,0,-30]);
-  var _cannons = [new Cannon([0,20,0]), new Cannon([20,20,0]), new Cannon([-20,20,0])];
+  //var _fence = new Fence([0,0,-30]);
+  var _cannons = [new Cannon([0,0,0]), new Cannon([20,0,0]), new Cannon([-20,0,0])];
   var _currCannon = _cannons[0];
   var _bullets = [];
 
@@ -50,10 +50,10 @@ function Environment() {
     var view = 150;
 
     var camera = new THREE.OrthographicCamera(
-      ratio*view / - 2,
+      ratio*view / -2,
       ratio*view / 2,
       view / 2,
-      view / - 2,
+      view / -2,
       -1000,
       1000
     );
@@ -112,15 +112,17 @@ function Environment() {
 
       var bullet = new Bullet(
         [
-          Math.sin(_currCannon.userData.currRotation)*14,
+          -Math.sin(_currCannon.userData.currRotation)*14,
           0,
-          -13*Math.cos(_currCannon.userData.currRotation)
+          Math.cos(_currCannon.userData.currRotation)*-13
         ],
         [
-          Math.sin(_currCannon.userData.currRotation),
+          -Math.sin(_currCannon.userData.currRotation),
           Math.cos(_currCannon.userData.currRotation)
         ]
       );
+      
+      //var bullet = _currCannon.betterFire();
 
       _bullets.push(bullet);
       _scene.add(bullet);
@@ -130,25 +132,20 @@ function Environment() {
     if (_currCannon.userData.bullet) {
       _bullets.forEach((node)=>{node.move()});
     }
-      /*
-      // cof much better cof
-      var bullet = _currCannon.betterFire();
 
-      _bullets.push(bullet);
-      _scene.add(bullet);
-    }
     /*
     _bullets.forEach((node) => {
       node.move();
-    });*/
+    });
+    */
 
-    if (_currCannon.userData.rotateLeft && _currCannon.userData.currRotation > -Math.PI/4) {
-      _currCannon.rotate(-Math.PI/8 * deltaTime);
-      _currCannon.userData.currRotation -= Math.PI/8 * deltaTime;
-    }
-    if (_currCannon.userData.rotateRight && _currCannon.userData.currRotation < Math.PI/4) {
+    if (_currCannon.userData.rotateLeft && _currCannon.userData.currRotation < Math.PI/4) {
       _currCannon.rotate(Math.PI/8 * deltaTime);
       _currCannon.userData.currRotation += Math.PI/8 * deltaTime;
+    }
+    if (_currCannon.userData.rotateRight && _currCannon.userData.currRotation > -Math.PI/4) {
+      _currCannon.rotate(-Math.PI/8 * deltaTime);
+      _currCannon.userData.currRotation -= Math.PI/8 * deltaTime;
     }
   }
 

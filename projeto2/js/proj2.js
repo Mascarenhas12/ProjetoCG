@@ -118,25 +118,19 @@ function Environment() {
       _bullets.push(bullet);
       _scene.add(bullet);
 
-      _camera3.position.set(bullet.position.x, bullet.position.y + 20, bullet.position.z);
+      _camera3.position.set(bullet.position.x, bullet.position.y + 30, bullet.position.z + 30);
       _camera3.lookAt(bullet.position);
     }
 
-    if (_currCannon.userData.bullet) {
-      _bullets.forEach((node) => {node.movement(deltaTime)});
-      if(_currentCamera == _camera3){
+    if (_bullets.length) {
+      if (_currentCamera == _camera3) {
         _currentCamera.lookAt(_bullets[_bullets.length-1].position);
       }
+
+      _bullets.forEach((node) => {
+        node.tryMove(deltaTime, _camera3)
+      });
     }
-
-    /* To be used after random balls are placed in the fence
-
-    _bullets.forEach((node) => {
-      node.move();
-    });
-
-    */
-
 
     if (_currCannon.userData.rotateLeft && _currCannon.userData.currRotation < Math.PI/4) {
       _currCannon.rotate(Math.PI/8 * deltaTime);
@@ -161,7 +155,6 @@ function Environment() {
         if (_currCannon.userData.unlockFiring) {
           _currCannon.userData.unlockFiring = false;
           _currCannon.userData.fire = true;
-          _currCannon.userData.bullet = true;
         }
         break;
 
@@ -189,6 +182,10 @@ function Environment() {
         _currCannon.changeColor(0x0000ff);
         _currCannon = _cannons[2];
         _currCannon.changeColor(0x00ffff);
+        break;
+
+      case 82: // "R"
+        //changeVisibilityAxis(_bullets, _cannons);
         break;
 
       case 49: // "1"
@@ -245,5 +242,10 @@ function Environment() {
     //_renderer.setSize(window.innerWidth, window.innerHeight);
 
     render();
+  }
+
+  function changeVisibilityAxis(bullets,cannons){
+    bullets.changeVisibilityAxis();
+    cannons.changeVisibilityAxis();
   }
 }

@@ -23,7 +23,6 @@ class Cannon extends THREE.Object3D {
     this.userData.currRotation = 0;
     this.userData.rotateLeft = false;
     this.userData.rotateRight = false;
-    this.userData.bullet = false;
 
     this.userData.unlockFiring = true;
     this.userData.fire = false;
@@ -66,37 +65,49 @@ class Cannon extends THREE.Object3D {
       [
         -Math.sin(this.userData.currRotation),
         Math.cos(this.userData.currRotation)
-      ]
+      ],
+      this.userData.currRotation
     );
 
     return bullet;
+  }
+
+  changeVisibilityAxis(){
+    this.children.forEach((child)=>{child.changeVisibilityAxis()});
   }
 }
 
 class Bullet extends THREE.Object3D {
   'use strict';
 
-  constructor(pos, velocity) {
+  constructor(pos, velocity, angle) {
     super();
 
-    this.userData.scalar = 100;
+    this.userData.scalar = THREE.Math.randFloat(50, 200);
     this.userData.friction = 0.8;
     this.userData.velocity = velocity;
-
-    this.userData.rotation = false;
-
-    this.userData.rotate = [];
+    this.userData.currRotation = Math.PI/2;
 
     this.add(new Sphere([0,0,0], [3,32,32]));
+    this.rotateY(angle);
 
     this.position.set(pos[0], pos[1], pos[2]);
 
     this.add(new THREE.AxisHelper(10));
   }
 
-  move(deltaTime) {
-    this.position.x += this.userData.scalar * this.userData.velocity[0]*deltaTime;
-    this.position.z -= this.userData.scalar * this.userData.velocity[1]*deltaTime;
+  tryMove(deltaTime, camera) {
+
+    this.move(deltaTime, camera);
+    this.rotate(deltaTime);
+  }
+
+  move(deltaTime, camera) {
+    this.position.x += this.userData.scalar * this.userData.velocity[0] * deltaTime;
+    this.position.z -= this.userData.scalar * this.userData.velocity[1] * deltaTime;
+
+    camera.position.x += this.userData.scalar * this.userData.velocity[0] * deltaTime;
+    camera.position.z -= this.userData.scalar * this.userData.velocity[1] * deltaTime;
 
     if (this.userData.scalar - this.userData.friction < 0) {
       this.userData.scalar = 0;
@@ -105,21 +116,19 @@ class Bullet extends THREE.Object3D {
       this.userData.scalar -= this.userData.friction;
     }
   }
-/*
-  rotate(angle) {
 
-    this.rotateX(angle);
+  rotate(deltaTime) {
 
-    if (this.userData -= this.userData.rotate[1] < 0){
-      this.userData.rotate[1]=0;
+    this.rotateX(-this.userData.currRotation * deltaTime);
+
+    this.userData.currRotation -= this.userData.friction * deltaTime;
+
+    if (this.userData.currRotation < 0) {
+      this.userData.currRotation = 0;
     }
-    else{
-    }
-  }*/
+  }
 
-  movement(deltaTime){
-
-    this.move(deltaTime);
-    //this.rotate(deltaTime);
+  changeVisibilityAxis(){
+    this.children.forEach((child)=>{child.changeVisibilityAxis()});
   }
 }

@@ -13,8 +13,8 @@ class Box extends THREE.Object3D {
   }
 
   changeColor(color) {
-    this.children.forEach(function(child){
-      if(child instanceof THREE.Mesh){
+    this.children.forEach(function(child) {
+      if (child instanceof THREE.Mesh) {
         child.material.color.setHex(color);
       }
     });
@@ -70,4 +70,12 @@ class Cylinder extends THREE.Object3D {
       }
     });
   }
+
+  /*changeVisibilityAxis(){
+    this.children.forEach((child)=>{
+      if(child instanceof THREE.AxisHelper){
+        child.
+      }
+    });
+  }*/
 }

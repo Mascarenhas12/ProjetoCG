@@ -29,17 +29,17 @@ class Cannon extends THREE.Object3D {
     this.userData.fire = false;
 
     this.shaft = new Cylinder([0,0,0], [3,3,20,64]);
-    this.muzzle = new Cylinder([0,0,0], [2,2,1,64]);
+    this.muzzle = new Cylinder([0,0,0], [4,4,1,64]);
 
     this.shaft.rotateX(Math.PI/2);
     this.muzzle.rotateX(Math.PI/2);
+
+    this.muzzle.translateY(-10.5);
 
     this.add(this.shaft);
     this.add(this.muzzle);
 
     this.position.set(pos[0], pos[1], pos[2]);
-
-    this.muzzle.translateY(-10.5);
 
     this.add(new THREE.AxisHelper(20));
   }
@@ -50,35 +50,24 @@ class Cannon extends THREE.Object3D {
 
   changeColor(color) {
     this.children.forEach(function(child){
-      child.changeColor(color);
+      if(!(child instanceof THREE.AxisHelper)){
+          child.changeColor(color);
+        }
     });
   }
-
-  /*
-  fire(bullet) {
-    bullet.rotateZ(this.userData.currRotation);
-    bullet.move();
-  }
-  */
 
   fire() {
     var bullet = new Bullet(
       [
-        -Math.sin(this.userData.currRotation)*14,
-        0,
-        Math.cos(this.userData.currRotation)*-13
+        this.position.x,
+        this.position.y,
+        this.position.z
       ],
       [
         -Math.sin(this.userData.currRotation),
         Math.cos(this.userData.currRotation)
       ]
     );
-
-    return bullet;
-  }
-
-  fire2() {
-    var bullet = new Bullet([this.muzzle.position.x, this.muzzle.position.y, this.muzzle.position.z], [3,32,32]);
 
     return bullet;
   }
@@ -94,11 +83,13 @@ class Bullet extends THREE.Object3D {
     this.userData.friction = 0.8;
     this.userData.velocity = velocity;
 
+    this.userData.rotation = false;
+
+    this.userData.rotate = [];
+
     this.add(new Sphere([0,0,0], [3,32,32]));
 
-    this.translateX(pos[0]);
-    this.translateY(pos[1]);
-    this.translateZ(pos[2]);
+    this.position.set(pos[0], pos[1], pos[2]);
 
     this.add(new THREE.AxisHelper(10));
   }
@@ -113,5 +104,22 @@ class Bullet extends THREE.Object3D {
     else {
       this.userData.scalar -= this.userData.friction;
     }
+  }
+/*
+  rotate(angle) {
+
+    this.rotateX(angle);
+
+    if (this.userData -= this.userData.rotate[1] < 0){
+      this.userData.rotate[1]=0;
+    }
+    else{
+    }
+  }*/
+
+  movement(deltaTime){
+
+    this.move(deltaTime);
+    //this.rotate(deltaTime);
   }
 }

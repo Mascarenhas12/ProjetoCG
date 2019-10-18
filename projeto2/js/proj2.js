@@ -16,8 +16,8 @@ function Environment() {
   var _renderer = createRenderer();
 
   var _camera1 = createOrtogonalCamera(0, 50, 0);
-  var _camera2 = createPerpectiveCamera(0, 0, 50);
-  //var _camera3 = createCamera(50, 0, 0);
+  var _camera2 = createPerpectiveCamera(50, 50, 50);
+  var _camera3 = createPerpectiveCamera(-50, 50, 50);
   var _currentCamera = _camera1;
 
   this.start = function() {
@@ -38,8 +38,10 @@ function Environment() {
       var scene = new THREE.Scene();
       scene.add(new THREE.AxisHelper(10));
 
-      _cannons.forEach((node)=>{scene.add(node)});
+      _cannons.forEach((node) => {scene.add(node)});
       scene.add(_fence);
+
+      _currCannon.changeColor(0x00ffff);
 
       return scene;
   }
@@ -110,13 +112,21 @@ function Environment() {
 
     if (_currCannon.userData.fire) {
       _currCannon.userData.fire = false;
-      var bullet = _currCannon.fire2();
+
+      var bullet = _currCannon.fire();
+
       _bullets.push(bullet);
       _scene.add(bullet);
+
+      _camera3.position.set(bullet.position.x, bullet.position.y + 20, bullet.position.z);
+      _camera3.lookAt(bullet.position);
     }
 
     if (_currCannon.userData.bullet) {
-      _bullets.forEach((node)=>{node.move(deltaTime)});
+      _bullets.forEach((node) => {node.movement(deltaTime)});
+      if(_currentCamera == _camera3){
+        _currentCamera.lookAt(_bullets[_bullets.length-1].position);
+      }
     }
 
     /* To be used after random balls are placed in the fence
@@ -164,15 +174,21 @@ function Environment() {
         break;
 
       case 65: // "A"
+        _currCannon.changeColor(0x0000ff);
         _currCannon = _cannons[0];
+        _currCannon.changeColor(0x00ffff);
         break;
 
       case 69: // "E"
-        _currCannon = _cannons[2];
+        _currCannon.changeColor(0x0000ff);
+        _currCannon = _cannons[1];
+        _currCannon.changeColor(0x00ffff);
         break;
 
       case 81: // "Q"
-        _currCannon = _cannons[1];
+        _currCannon.changeColor(0x0000ff);
+        _currCannon = _cannons[2];
+        _currCannon.changeColor(0x00ffff);
         break;
 
       case 49: // "1"

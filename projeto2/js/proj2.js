@@ -7,8 +7,8 @@ function Environment() {
 
   var _clock = new THREE.Clock(true);
 
-  //var _fence = new Fence([0,0,-30]);
-  var _cannons = [new Cannon([0,0,0]), new Cannon([20,0,0]), new Cannon([-20,0,0])];
+  var _fence = new Fence([0,0,-30]);
+  var _cannons = [new Cannon([0,0,0]), new Cannon([30,0,0]), new Cannon([-30,0,0])];
   var _currCannon = _cannons[0];
   var _bullets = [];
 
@@ -39,6 +39,7 @@ function Environment() {
       scene.add(new THREE.AxisHelper(10));
 
       _cannons.forEach((node)=>{scene.add(node)});
+      scene.add(_fence);
 
       return scene;
   }
@@ -109,35 +110,23 @@ function Environment() {
 
     if (_currCannon.userData.fire) {
       _currCannon.userData.fire = false;
-
-      var bullet = new Bullet(
-        [
-          -Math.sin(_currCannon.userData.currRotation)*14,
-          0,
-          Math.cos(_currCannon.userData.currRotation)*-13
-        ],
-        [
-          -Math.sin(_currCannon.userData.currRotation),
-          Math.cos(_currCannon.userData.currRotation)
-        ]
-      );
-      
-      //var bullet = _currCannon.betterFire();
-
+      var bullet = _currCannon.fire2();
       _bullets.push(bullet);
       _scene.add(bullet);
-      _currCannon.fire(bullet);
     }
 
     if (_currCannon.userData.bullet) {
-      _bullets.forEach((node)=>{node.move()});
+      _bullets.forEach((node)=>{node.move(deltaTime)});
     }
 
-    /*
+    /* To be used after random balls are placed in the fence
+
     _bullets.forEach((node) => {
       node.move();
     });
+
     */
+
 
     if (_currCannon.userData.rotateLeft && _currCannon.userData.currRotation < Math.PI/4) {
       _currCannon.rotate(Math.PI/8 * deltaTime);
@@ -175,15 +164,15 @@ function Environment() {
         break;
 
       case 65: // "A"
-
+        _currCannon = _cannons[0];
         break;
 
       case 69: // "E"
-
+        _currCannon = _cannons[2];
         break;
 
       case 81: // "Q"
-
+        _currCannon = _cannons[1];
         break;
 
       case 49: // "1"
@@ -217,18 +206,6 @@ function Environment() {
 
       case 39: // "RIGHT"
         _currCannon.userData.rotateRight = false;
-        break;
-
-      case 65: // "A"
-
-        break;
-
-      case 69: // "E"
-
-        break;
-
-      case 81: // "Q"
-
         break;
 
       default:

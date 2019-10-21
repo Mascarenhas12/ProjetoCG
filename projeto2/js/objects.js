@@ -47,6 +47,14 @@ class Sphere extends THREE.Object3D {
       }
     });
   }
+
+  changeVisibilityAxis(){
+    this.children.forEach((child)=>{
+      if(child instanceof THREE.AxisHelper){
+        child.visible = !child.visible
+      }
+    });
+  }
 }
 
 class Cylinder extends THREE.Object3D {
@@ -71,11 +79,11 @@ class Cylinder extends THREE.Object3D {
     });
   }
 
-  /*changeVisibilityAxis(){
+  changeVisibilityAxis(){
     this.children.forEach((child)=>{
       if(child instanceof THREE.AxisHelper){
-        child.
+        child.visible = !child.visible
       }
     });
-  }*/
+  }
 }

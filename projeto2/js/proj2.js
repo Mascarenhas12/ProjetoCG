@@ -11,6 +11,7 @@ function Environment() {
   var _cannons = [new Cannon([0,0,0]), new Cannon([30,0,0]), new Cannon([-30,0,0])];
   var _currCannon = _cannons[0];
   var _bullets = [];
+  var _bulletCounter = 0;
 
   var _scene = createScene();
   var _renderer = createRenderer();
@@ -114,8 +115,8 @@ function Environment() {
       _currCannon.userData.fire = false;
 
       var bullet = _currCannon.fire();
-
       _bullets.push(bullet);
+      _bulletCounter++;
       _scene.add(bullet);
 
       _camera3.position.set(bullet.position.x, bullet.position.y + 30, bullet.position.z + 30);
@@ -128,7 +129,11 @@ function Environment() {
       }
 
       _bullets.forEach((node) => {
-        node.tryMove(deltaTime, _camera3)
+        node.tryMove(deltaTime, _camera3);
+        if( -52 < node.position[0]+3 < 52 && 0 <=node.position[1]+3 <= 16 && -34 <= node.position[2]+3 <= 30){
+          no
+        }
+
       });
     }
 
@@ -185,7 +190,8 @@ function Environment() {
         break;
 
       case 82: // "R"
-        //changeVisibilityAxis(_bullets, _cannons);
+        _bullets.forEach((child)=>{child.changeVisibilityAxis();});
+        _cannons.forEach((child)=>{child.changeVisibilityAxis();});
         break;
 
       case 49: // "1"
@@ -242,10 +248,5 @@ function Environment() {
     //_renderer.setSize(window.innerWidth, window.innerHeight);
 
     render();
-  }
-
-  function changeVisibilityAxis(bullets,cannons){
-    bullets.changeVisibilityAxis();
-    cannons.changeVisibilityAxis();
   }
 }

@@ -30,6 +30,7 @@ function Environment() {
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
     window.addEventListener('resize', onResize);
+    setUpRndBullets();
 
     animate();
   }
@@ -96,6 +97,16 @@ function Environment() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     return renderer;
+  }
+
+  function setUpRndBullets(){
+    for(var i=0; i < THREE.Math.randFloat(10,20); ++i){
+      var b = new Bullet([0, 0, 0], [0, 0], 0);
+      _scene.add(b);
+      b.translateZ(THREE.Math.randFloat(-65, -15));
+      b.translateX(THREE.Math.randFloat(-45,45));
+      _bullets.push(b);
+    }
   }
 
   function animate() {

@@ -93,7 +93,10 @@ class Bullet extends THREE.Object3D {
     this.userData.scalar = THREE.Math.randFloat(100, 150);
     this.userData.friction = 0.8;
     this.userData.velocity = velocity;
-    this.userData.currRotation = this.userData.scalar / 2;
+    this.userData.currRotation = 0;
+    if(angle){
+      this.userData.currRotation = this.userData.scalar / 2;
+    }
     this.userData.forward = true;
 
     this.add(new Sphere([0,0,0], [3,32,32]));
@@ -128,24 +131,25 @@ class Bullet extends THREE.Object3D {
   rotate(deltaTime) {
 
     if(this.userData.forward){
+      console.log(this.userData.currRotation);
+      if (this.userData.currRotation <= 0) {
+        this.userData.currRotation = 0;
+      }
 
       this.rotateX(-this.userData.currRotation * deltaTime);
 
       this.userData.currRotation -= this.userData.friction/2;
-
-      if (this.userData.currRotation < 0) {
-        this.userData.currRotation = 0;
-      }
     }
     else{
+
+      if (this.userData.currRotation >= 0) {
+        this.userData.currRotation = 0;
+      }
 
       this.rotateX(-this.userData.currRotation * deltaTime);
 
       this.userData.currRotation += this.userData.friction/2;
 
-      if (this.userData.currRotation > 0) {
-        this.userData.currRotation = 0;
-      }
     }
   }
 

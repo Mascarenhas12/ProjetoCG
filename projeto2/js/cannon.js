@@ -131,7 +131,6 @@ class Bullet extends THREE.Object3D {
   rotate(deltaTime) {
 
     if(this.userData.forward){
-      console.log(this.userData.currRotation);
       if (this.userData.currRotation <= 0) {
         this.userData.currRotation = 0;
       }
@@ -199,6 +198,23 @@ class Bullet extends THREE.Object3D {
         this.userData.velocity[0] = -this.userData.velocity[0];
         this.userData.velocity[1] = this.userData.velocity[1];
       }
+    }
+  }
+
+  detectEnd(scene,list){
+
+    if(this.position.z >= 5){
+      
+      scene.remove(this);
+      list=list.filter(function(){
+        for( var i = 0; i < list.lenght; ++i){
+
+          if(list[i]===this){
+            list.splice(i,this);
+          }
+        }
+        
+      });
     }
   }
 }

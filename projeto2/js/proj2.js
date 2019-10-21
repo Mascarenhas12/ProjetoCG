@@ -143,8 +143,10 @@ function Environment() {
       }
 
       _bullets.forEach((node) => {
+        node.detectEnd(_scene ,_bullets);
         if(node.nearBackwall(_fence) || node.nearLeftwall(_fence) || node.nearRightwall(_fence)){
           node.detectColision(_fence);
+          
         }
         node.tryMove(deltaTime, _camera3);
 
@@ -185,7 +187,7 @@ function Environment() {
         _currCannon.userData.rotateRight = true;
         break;
 
-      case 65: // "A"
+      case  87: // "W"
         _currCannon.changeColor(0x0000ff);
         _currCannon = _cannons[0];
         _currCannon.changeColor(0x00ffff);

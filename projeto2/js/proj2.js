@@ -17,8 +17,8 @@ function Environment() {
   var _renderer = createRenderer();
 
   var _camera1 = createOrtogonalCamera(0, 50, 0);
-  var _camera2 = createPerpectiveCamera(50, 50, 50);
-  var _camera3 = createPerpectiveCamera(-50, 50, 50);
+  var _camera2 = createPerspectiveCamera(50, 50, 50);
+  var _camera3 = createPerspectiveCamera(-50, 50, 50);
   var _currentCamera = _camera1;
   var _visible = true;
 
@@ -71,7 +71,7 @@ function Environment() {
     return camera;
   }
 
-  function createPerpectiveCamera(x, y, z) {
+  function createPerspectiveCamera(x, y, z) {
     'use strict';
 
     var ratio = window.innerWidth / window.innerHeight;
@@ -132,21 +132,21 @@ function Environment() {
       }
 
       _bullets.forEach((node) => {
-      //if(node.nearBackwall(_fence)){
-        node.detectColision(_fence);
-      //  }
+        if(node.nearBackwall(_fence) || node.nearLeftwall(_fence) || node.nearRightwall(_fence)){
+          node.detectColision(_fence);
+        }
         node.tryMove(deltaTime, _camera3);
 
       });
     }
 
     if (_currCannon.userData.rotateLeft && _currCannon.userData.currRotation < Math.PI/4) {
-      _currCannon.rotate(Math.PI/8 * deltaTime);
-      _currCannon.userData.currRotation += Math.PI/8 * deltaTime;
+      _currCannon.rotate(Math.PI/2 * deltaTime);
+      _currCannon.userData.currRotation += Math.PI/2 * deltaTime;
     }
     if (_currCannon.userData.rotateRight && _currCannon.userData.currRotation > -Math.PI/4) {
-      _currCannon.rotate(-Math.PI/8 * deltaTime);
-      _currCannon.userData.currRotation -= Math.PI/8 * deltaTime;
+      _currCannon.rotate(-Math.PI/2 * deltaTime);
+      _currCannon.userData.currRotation -= Math.PI/2 * deltaTime;
     }
   }
 

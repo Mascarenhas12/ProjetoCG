@@ -160,9 +160,17 @@ class Bullet extends THREE.Object3D {
     });
   }
 
-  //nearBackwall(fence){
-  //  return (this.position.z-3 - fence.backwall.position.z+2) < 2;
-  //}
+  nearBackwall(fence){
+    return (this.position.z-3 - fence.backwall.position.z+2) < 1;
+  }
+
+  nearLeftwall(fence){
+    return (this.position.x-3 - fence.backwall.position.x-50) < 1;
+  }
+
+  nearRightwall(fence){
+    return (fence.backwall.position.x-2- this.position.x+3) < 1;
+  }
 
   detectColision(fence){
     if(this.position.z <= 0){

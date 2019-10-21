@@ -73,7 +73,14 @@ class Cannon extends THREE.Object3D {
   }
 
   changeVisibilityAxis(){
-    this.children.forEach((child)=>{child.changeVisibilityAxis()});
+    this.children.forEach((child)=>{
+      if(child instanceof THREE.AxisHelper){
+        child.visible = !child.visible
+      }
+      else{
+        child.changeVisibilityAxis();
+      }
+    });
   }
 }
 
@@ -83,10 +90,11 @@ class Bullet extends THREE.Object3D {
   constructor(pos, velocity, angle) {
     super();
 
-    this.userData.scalar = THREE.Math.randFloat(50, 200);
+    this.userData.scalar = THREE.Math.randFloat(100, 150);
     this.userData.friction = 0.8;
     this.userData.velocity = velocity;
-    this.userData.currRotation = Math.PI/2;
+    this.userData.currRotation = this.userData.scalar / 2;
+    this.userData.forward = true;
 
     this.add(new Sphere([0,0,0], [3,32,32]));
     this.rotateY(angle);
@@ -119,16 +127,66 @@ class Bullet extends THREE.Object3D {
 
   rotate(deltaTime) {
 
-    this.rotateX(-this.userData.currRotation * deltaTime);
+    if(this.userData.forward){
 
-    this.userData.currRotation -= this.userData.friction * deltaTime;
+      this.rotateX(-this.userData.currRotation * deltaTime);
 
-    if (this.userData.currRotation < 0) {
-      this.userData.currRotation = 0;
+      this.userData.currRotation -= this.userData.friction/2;
+
+      if (this.userData.currRotation < 0) {
+        this.userData.currRotation = 0;
+      }
+    }
+    else{
+
+      this.rotateX(-this.userData.currRotation * deltaTime);
+
+      this.userData.currRotation += this.userData.friction/2;
+
+      if (this.userData.currRotation > 0) {
+        this.userData.currRotation = 0;
+      }
     }
   }
 
   changeVisibilityAxis(){
-    this.children.forEach((child)=>{child.changeVisibilityAxis()});
+    this.children.forEach((child)=>{
+      if(child instanceof THREE.AxisHelper){
+        child.visible = !child.visible
+      }
+      else{
+        child.changeVisibilityAxis();
+      }
+    });
+  }
+
+  //nearBackwall(fence){
+  //  return (this.position.z-3 - fence.backwall.position.z+2) < 2;
+  //}
+
+  detectColision(fence){
+    if(this.position.z <= 0){
+      if(this.position.z -3 <= fence.backwall.position.z+2 && this.position.z -3 >= fence.backwall.position.z-2 ){
+        this.position.z += (fence.backwall.position.z + 2) -(this.position.z -3);
+        this.userData.velocity[0] = this.userData.velocity[0];
+        this.userData.velocity[1] = -this.userData.velocity[1];
+        this.userData.currRotation = -this.userData.currRotation;
+        this.userData.forward=false;
+
+      }
+
+      if(this.position.x -3 <= fence.backwall.position.x - 50 && this.position.x -3 >= fence.backwall.position.x - 54 ){
+        this.position.x += (fence.backwall.position.x - 50) - (this.position.x -3);
+        this.userData.velocity[0] = -this.userData.velocity[0];
+        this.userData.velocity[1] = this.userData.velocity[1];
+
+      }
+
+      if(this.position.x +3 >= fence.backwall.position.x + 50 && this.position.x +3 <= fence.backwall.position.x + 54 ){
+        this.position.x -= (this.position.x +3)-(fence.backwall.position.x + 50);
+        this.userData.velocity[0] = -this.userData.velocity[0];
+        this.userData.velocity[1] = this.userData.velocity[1];
+      }
+    }
   }
 }

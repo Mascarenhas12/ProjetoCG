@@ -20,6 +20,7 @@ function Environment() {
   var _camera2 = createPerpectiveCamera(50, 50, 50);
   var _camera3 = createPerpectiveCamera(-50, 50, 50);
   var _currentCamera = _camera1;
+  var _visible = true;
 
   this.start = function() {
     'use strict';
@@ -115,8 +116,10 @@ function Environment() {
       _currCannon.userData.fire = false;
 
       var bullet = _currCannon.fire();
+      if(!_visible){
+        bullet.changeVisibilityAxis();
+      }
       _bullets.push(bullet);
-      _bulletCounter++;
       _scene.add(bullet);
 
       _camera3.position.set(bullet.position.x, bullet.position.y + 30, bullet.position.z + 30);
@@ -129,10 +132,10 @@ function Environment() {
       }
 
       _bullets.forEach((node) => {
+      //if(node.nearBackwall(_fence)){
+        node.detectColision(_fence);
+      //  }
         node.tryMove(deltaTime, _camera3);
-        if( -52 < node.position[0]+3 < 52 && 0 <=node.position[1]+3 <= 16 && -34 <= node.position[2]+3 <= 30){
-          no
-        }
 
       });
     }
@@ -192,6 +195,8 @@ function Environment() {
       case 82: // "R"
         _bullets.forEach((child)=>{child.changeVisibilityAxis();});
         _cannons.forEach((child)=>{child.changeVisibilityAxis();});
+        _visible = !_visible;
+
         break;
 
       case 49: // "1"

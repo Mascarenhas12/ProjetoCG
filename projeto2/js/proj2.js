@@ -30,6 +30,7 @@ function Environment() {
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
     window.addEventListener('resize', onResize);
+
     setUpRndBullets();
 
     animate();
@@ -100,11 +101,13 @@ function Environment() {
   }
 
   function setUpRndBullets(){
-    for(var i=0; i < THREE.Math.randFloat(10,20); ++i){
+    var numRandBullets = THREE.Math.randFloat(2,4);
+
+    for(let i = 0; i < numRandBullets; ++i) {
       var b = new Bullet([0, 0, 0], [0, 0], 0);
       _scene.add(b);
       b.translateZ(THREE.Math.randFloat(-65, -15));
-      b.translateX(THREE.Math.randFloat(-45,45));
+      b.translateX(THREE.Math.randFloat(-43,43));
       _bullets.push(b);
     }
   }
@@ -143,12 +146,15 @@ function Environment() {
       }
 
       _bullets.forEach((node) => {
-        node.detectEnd(_scene ,_bullets);
-        if(node.nearBackwall(_fence) || node.nearLeftwall(_fence) || node.nearRightwall(_fence)){
-          node.detectColision(_fence);
-          
-        }
+        //node.detectEnd(_scene, _bullets);
         node.tryMove(deltaTime, _camera3);
+
+        node.detectColisionBall(_bullets);
+
+        if(node.nearBackwall(_fence) || node.nearLeftwall(_fence) || node.nearRightwall(_fence)){
+          node.detectColisionWall(_fence);
+
+        }
 
       });
     }
@@ -214,14 +220,17 @@ function Environment() {
 
       case 49: // "1"
         _currentCamera = _camera1;
+        onResize();
         break;
 
       case 50: // "2"
         _currentCamera = _camera2;
+        onResize();
         break;
 
       case 51: // "3"
         _currentCamera = _camera3;
+        onResize();
         break;
 
       default:
@@ -253,18 +262,24 @@ function Environment() {
   function onResize(e) {
     'use strict';
 
-    //_currentCamera.aspect = window.innerWidth / window.innerHeight;
-    //_currentCamera.updateProjectionMatrix();
-
     _renderer.setSize(window.innerWidth, window.innerHeight);
 
-    if (window.innerWidth > 0 && window.innerHeight > 0) {
-      _currentCamera.aspect = _renderer.getSize().width / _renderer.getSize().height;
-      _currentCamera.updateProjectionMatrix();
+    if (_currentCamera == _camera1) {
+      var ratio = window.innerWidth / window.innerHeight;
+      var view = 150;
+
+      _currentCamera.left = ratio*view / -2
+      _currentCamera.right = ratio*view / 2
+      _currentCamera.top = view / 2
+      _currentCamera.bottom = view / -2
+    }
+    else {
+      if (window.innerWidth > 0 && window.innerHeight > 0) {
+        _currentCamera.aspect = _renderer.getSize().width / _renderer.getSize().height;
+      }
     }
 
-    //_renderer.setSize(window.innerWidth, window.innerHeight);
-
+    _currentCamera.updateProjectionMatrix();
     render();
   }
 }

@@ -192,7 +192,6 @@ class Bullet extends THREE.Object3D {
     if(this.position.z <= 0){
       if(this.position.z - 3 <= fence.backwall.position.z + 2 && this.position.z - 3 >= fence.backwall.position.z - 2){
         this.position.z += (fence.backwall.position.z + 2) - (this.position.z - 3);
-        //this.userData.velocity[0] = this.userData.velocity[0];
         this.userData.velocity[1] = -this.userData.velocity[1];
         this.userData.currRotation = -this.userData.currRotation;
         this.userData.forward=false;
@@ -203,14 +202,12 @@ class Bullet extends THREE.Object3D {
       if(this.position.x - 3 <= fence.backwall.position.x - 52 && this.position.x - 4 >= fence.backwall.position.x - 54){
         this.position.x += (fence.backwall.position.x - 50) - (this.position.x -3);
         this.userData.velocity[0] = -this.userData.velocity[0];
-        //this.userData.velocity[1] = this.userData.velocity[1];
 
       }
 
       if(this.position.x + 3 >= fence.backwall.position.x + 50 && this.position.x + 4 <= fence.backwall.position.x + 54){
         this.position.x -= (this.position.x + 3) - (fence.backwall.position.x + 50);
         this.userData.velocity[0] = -this.userData.velocity[0];
-        //this.userData.velocity[1] = this.userData.velocity[1];
       }
     }
   }

@@ -199,7 +199,7 @@ class Bullet extends THREE.Object3D {
         this.rotateY(-2 * this.userData.direction);
       }
 
-      if(this.position.x - 3 <= fence.backwall.position.x - 52 && this.position.x - 4 >= fence.backwall.position.x - 54){
+      if(this.position.x - 3 <= fence.backwall.position.x - 50 && this.position.x - 4 >= fence.backwall.position.x - 54){
         this.position.x += (fence.backwall.position.x - 50) - (this.position.x -3);
         this.userData.velocity[0] = -this.userData.velocity[0];
 

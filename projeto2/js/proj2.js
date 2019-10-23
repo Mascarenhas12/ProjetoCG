@@ -8,7 +8,7 @@ function Environment() {
   var _clock = new THREE.Clock(true);
 
   var _fence = new Fence([0,0,-30]);
-  var _cannons = [new Cannon([0,0,0]), new Cannon([30,0,0]), new Cannon([-30,0,0])];
+  var _cannons = [new Cannon([0,0,40]), new Cannon([30,0,40]), new Cannon([-30,0,40])];
   var _currCannon = _cannons[0];
   var _bullets = [];
   var _bulletCounter = 0;
@@ -18,9 +18,11 @@ function Environment() {
 
   var _camera1 = createOrtogonalCamera(0, 50, 0);
   var _camera2 = createPerspectiveCamera(50, 50, 50);
-  var _camera3 = createPerspectiveCamera(-50, 50, 50);
+  var _camera3 = createPerspectiveCamera(-20, 20, 0);
   var _currentCamera = _camera1;
-  var _visible = true;
+
+  var _unlockAxisVisibility = true;
+  var _visibleAxis = true;
 
   this.start = function() {
     'use strict';
@@ -107,7 +109,7 @@ function Environment() {
       var b = new Bullet([0, 0, 0], [0, 0], 0);
       _scene.add(b);
       b.translateZ(THREE.Math.randFloat(-65, -15));
-      b.translateX(THREE.Math.randFloat(-43,43));
+      b.translateX(THREE.Math.randFloat(-43, 43));
       _bullets.push(b);
     }
   }
@@ -126,34 +128,44 @@ function Environment() {
 
 		var deltaTime = _clock.getDelta();
 
+
     if (_currCannon.userData.fire) {
       _currCannon.userData.fire = false;
 
-      var bullet = _currCannon.fire();
-      if(!_visible){
+      var bullet = _currCannon.fire(_bullets, _camera3);
+
+      if (!_visibleAxis) {
         bullet.changeVisibilityAxis();
       }
+
       _bullets.push(bullet);
       _scene.add(bullet);
 
-      _camera3.position.set(bullet.position.x, bullet.position.y + 30, bullet.position.z + 30);
-      _camera3.lookAt(bullet.position);
+      var v = new THREE.Vector3(0,0,0);
+      bullet.getWorldPosition(v);
+      //_camera3.position.set(bullet.position.x*bullet.userData.velocity[0], bullet.position.y+20, bullet.position.z+20*bullet.userData.velocity[1]);
+      _camera3.position.set(v.x, v.y+30, v.z);
+
+
+      _camera3.rotateY(_currCannon.userData.currRotation);
+      //_camera3.lookAt(bullet.position);
+      //_currentCamera.getWorldDirection(v);
+      //console.log(v);
     }
 
     if (_bullets.length) {
       if (_currentCamera == _camera3) {
-        _currentCamera.lookAt(_bullets[_bullets.length-1].position);
+        _currentCamera.lookAt(_bullets[_bullets.length - 1].position);
       }
 
       _bullets.forEach((node) => {
-        //node.detectEnd(_scene, _bullets);
+        node.detectEnd(_scene, _bullets);
         node.tryMove(deltaTime, _camera3);
 
-        node.detectColisionBall(_bullets);
+        node.detectColisionBall(_bullets,deltaTime);
 
         if(node.nearBackwall(_fence) || node.nearLeftwall(_fence) || node.nearRightwall(_fence)){
           node.detectColisionWall(_fence);
-
         }
 
       });
@@ -212,10 +224,12 @@ function Environment() {
         break;
 
       case 82: // "R"
-        _bullets.forEach((child)=>{child.changeVisibilityAxis();});
-        _cannons.forEach((child)=>{child.changeVisibilityAxis();});
-        _visible = !_visible;
-
+        if (_unlockAxisVisibility) {
+          _visibleAxis = !_visibleAxis;
+          _unlockAxisVisibility = false;
+          _bullets.forEach((child)=>{child.changeVisibilityAxis();});
+          _cannons.forEach((child)=>{child.changeVisibilityAxis();});
+        }
         break;
 
       case 49: // "1"
@@ -252,6 +266,10 @@ function Environment() {
 
       case 39: // "RIGHT"
         _currCannon.userData.rotateRight = false;
+        break;
+
+      case 82: // "R"
+        _unlockAxisVisibility = true;
         break;
 
       default:

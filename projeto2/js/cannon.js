@@ -55,7 +55,10 @@ class Cannon extends THREE.Object3D {
     });
   }
 
-  fire() {
+  fire(bullets, camera) {
+
+    //bullets[bullets.length - 1].remove(camera);
+
     var bullet = new Bullet(
       [
         this.position.x,
@@ -68,6 +71,8 @@ class Cannon extends THREE.Object3D {
       ],
       this.userData.currRotation
     );
+
+    //bullet.add(camera);
 
     return bullet;
   }
@@ -94,8 +99,9 @@ class Bullet extends THREE.Object3D {
     this.userData.friction = 0.8;
     this.userData.velocity = velocity;
     this.userData.currRotation = 0;
-    this.rotationY = angle;
-    if(angle){
+    this.userData.direction = angle;
+
+    if (angle) {
       this.userData.currRotation = this.userData.scalar / 2;
     }
     this.userData.forward = true;
@@ -119,8 +125,10 @@ class Bullet extends THREE.Object3D {
     this.position.x += this.userData.scalar * this.userData.velocity[0] * deltaTime;
     this.position.z -= this.userData.scalar * this.userData.velocity[1] * deltaTime;
 
-    camera.position.x += this.userData.scalar * this.userData.velocity[0] * deltaTime;
-    camera.position.z -= this.userData.scalar * this.userData.velocity[1] * deltaTime;
+    var v = new THREE.Vector3(0,0,0);
+    this.getWorldPosition(v);
+    //_camera3.position.set(bullet.position.x*bullet.userData.velocity[0], bullet.position.y+20, bullet.position.z+20*bullet.userData.velocity[1]);
+    camera.position.set(v.x, v.y+30, v.z+30);
 
     if (this.userData.scalar - this.userData.friction < 0) {
       this.userData.scalar = 0;
@@ -160,7 +168,7 @@ class Bullet extends THREE.Object3D {
   changeVisibilityAxis(){
     this.children.forEach((child)=>{
       if(child instanceof THREE.AxisHelper){
-        child.visible = !child.visible
+        child.visible = !child.visible;
       }
       else{
         child.changeVisibilityAxis();
@@ -189,7 +197,7 @@ class Bullet extends THREE.Object3D {
         this.userData.currRotation = -this.userData.currRotation;
         this.userData.forward=false;
         this.rotateZ(Math.PI);
-        //this.rotateY(-2 * this.rotationY); // !!! Ball must have Y-axis (green) pointing up to work
+        this.rotateY(-2 * this.userData.direction);
       }
 
       if(this.position.x - 3 <= fence.backwall.position.x - 50 && this.position.x - 3 >= fence.backwall.position.x - 54){
@@ -200,14 +208,14 @@ class Bullet extends THREE.Object3D {
       }
 
       if(this.position.x + 3 >= fence.backwall.position.x + 50 && this.position.x + 3 <= fence.backwall.position.x + 54){
-        this.position.x -= (this.position.x +3)-(fence.backwall.position.x + 50);
+        this.position.x -= (this.position.x + 3) - (fence.backwall.position.x + 50);
         this.userData.velocity[0] = -this.userData.velocity[0];
         //this.userData.velocity[1] = this.userData.velocity[1];
       }
     }
   }
 
-  detectColisionBall(bullets){
+  detectColisionBall(bullets, deltaTime){
 
     for (var i = 0; i < bullets.length; ++i) {
 
@@ -218,42 +226,39 @@ class Bullet extends THREE.Object3D {
       var distToBall = distanceVector(this.position, bullets[i].position);
       if (distToBall <= 6) {
 
-        /*if(this.userData.velocity[0] == 0 && this.userData.velocity[1] == 0){
+        if(this.userData.velocity[0] == 0 && this.userData.velocity[1] == 0){
           var vector = new THREE.Vector3(this.position.x - bullets[i].position.x, 0, this.position.z - bullets[i].position.z);
           this.translateOnAxis(this.localToWorld(vector).normalize(), 1);
           continue;
-        }*/
+        }
 
-        bullets[i].userData.scalar = this.userData.scalar/2
-        this.userData.scalar = this.userData.scalar/2;
+        bullets[i].userData.scalar = this.userData.scalar;
         bullets[i].userData.velocity[0] = this.userData.velocity[0];
         bullets[i].userData.velocity[1] = this.userData.velocity[1];
         bullets[i].userData.currRotation = this.userData.currRotation;
 
+        // Movement after collision check to position the ball out of collision range before rendering
+        this.position.x -= (this.userData.scalar + this.userData.friction) * this.userData.velocity[0] * deltaTime;
+        this.position.z += (this.userData.scalar + this.userData.friction) * this.userData.velocity[1] * deltaTime;
+
         this.userData.velocity[0] = -this.userData.velocity[0];
         this.userData.velocity[1] = -this.userData.velocity[1];
-        var vector = new THREE.Vector3(this.position.x - bullets[i].position.x, 0, this.position.z - bullets[i].position.z);
-        this.translateOnAxis(this.localToWorld(vector).normalize(), 1);
-
-        //this.userData.scalar = this.userData.scalar;
-
-        //console.log(distToBall, bullets[i].userData.scalar, bullets[i].userData.velocity);
+        this.userData.scalar = this.userData.scalar;
       }
     }
   }
 
   detectEnd(scene, list){
-    if (this.position.z >= 5)
+    if (this.position.z >= 2 && this.userData.velocity[1] < 0 || (this.position.x >=60 || this.position.x <= -60))
     {
       scene.remove(this);
 
-      list = list.filter(function()
-      {
-        for( var i = 0; i < list.lenght; ++i)
+      list = list.filter(()=>{
+        for( var i = 0; i < list.length; ++i)
         {
           if (list[i] == this)
           {
-            list.splice(i, this);
+            list.splice(i, 1);
           }
         }
       });

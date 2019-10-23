@@ -4,13 +4,13 @@ class Fence extends THREE.Object3D {
   constructor(pos) {
     super();
 
-    this.backwall= new Box([0,0,0], [4,16,104]);
+    this.backwall= new Box([0,0,0], [4,16,108]);
     this.backwall.translateZ(pos[2]-42);
     this.backwall.rotateY(Math.PI / 2);
     this.add(this.backwall);
 
-    this.add(new Box([50,0,-35], [4,16,70]));
-    this.add(new Box([-50,0,-35], [4,16,70]));
+    this.add(new Box([52,0,-35], [4,16,70]));
+    this.add(new Box([-52,0,-35], [4,16,70]));
   }
 }
 
@@ -200,14 +200,14 @@ class Bullet extends THREE.Object3D {
         this.rotateY(-2 * this.userData.direction);
       }
 
-      if(this.position.x - 3 <= fence.backwall.position.x - 50 && this.position.x - 3 >= fence.backwall.position.x - 54){
+      if(this.position.x - 3 <= fence.backwall.position.x - 52 && this.position.x - 4 >= fence.backwall.position.x - 54){
         this.position.x += (fence.backwall.position.x - 50) - (this.position.x -3);
         this.userData.velocity[0] = -this.userData.velocity[0];
         //this.userData.velocity[1] = this.userData.velocity[1];
 
       }
 
-      if(this.position.x + 3 >= fence.backwall.position.x + 50 && this.position.x + 3 <= fence.backwall.position.x + 54){
+      if(this.position.x + 3 >= fence.backwall.position.x + 50 && this.position.x + 4 <= fence.backwall.position.x + 54){
         this.position.x -= (this.position.x + 3) - (fence.backwall.position.x + 50);
         this.userData.velocity[0] = -this.userData.velocity[0];
         //this.userData.velocity[1] = this.userData.velocity[1];

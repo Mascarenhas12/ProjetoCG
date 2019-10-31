@@ -95,7 +95,7 @@ class Bullet extends THREE.Object3D {
   constructor(pos, velocity, angle) {
     super();
 
-    this.userData.scalar = THREE.Math.randFloat(100, 150);
+    this.userData.scalar = THREE.Math.randFloat(100, 120);
     this.userData.friction = 0.8;
     this.userData.velocity = velocity;
     this.userData.currRotation = 0;

@@ -11,13 +11,12 @@ function Environment() {
   var _cannons = [new Cannon([0,0,40]), new Cannon([30,0,40]), new Cannon([-30,0,40])];
   var _currCannon = _cannons[0];
   var _bullets = [];
-  var _bulletCounter = 0;
 
   var _scene = createScene();
   var _renderer = createRenderer();
 
   var _camera1 = createOrtogonalCamera(0, 50, 0);
-  var _camera2 = createPerspectiveCamera(50, 50, 50);
+  var _camera2 = createPerspectiveCamera(50, 150, 150);
   var _camera3 = createPerspectiveCamera(-20, 20, 0);
   var _currentCamera = _camera1;
 
@@ -42,7 +41,7 @@ function Environment() {
       'use strict';
 
       var scene = new THREE.Scene();
-      scene.add(new THREE.AxisHelper(10));
+      //scene.add(new THREE.AxisHelper(10));
 
       _cannons.forEach((node) => {scene.add(node)});
       scene.add(_fence);
@@ -63,13 +62,11 @@ function Environment() {
       ratio*view / 2,
       view / 2,
       view / -2,
-      -1000,
+      0.1,
       1000
     );
 
-    camera.position.x = x;
-    camera.position.y = y;
-    camera.position.z = z;
+    camera.position.set(x, y, z);
     camera.lookAt(_scene.position);
 
     return camera;
@@ -83,9 +80,7 @@ function Environment() {
 
     var camera = new THREE.PerspectiveCamera(view, ratio, 1, 1000);
 
-    camera.position.x = x;
-    camera.position.y = y;
-    camera.position.z = z;
+    camera.position.set(x, y, z);
     camera.lookAt(_scene.position);
 
     return camera;
@@ -207,18 +202,24 @@ function Environment() {
 
       case  87: // "W"
         _currCannon.changeColor(0x0000ff);
+        _currCannon.userData.rotateLeft = false;
+        _currCannon.userData.rotateRight = false;
         _currCannon = _cannons[0];
         _currCannon.changeColor(0x00ffff);
         break;
 
       case 69: // "E"
         _currCannon.changeColor(0x0000ff);
+        _currCannon.userData.rotateLeft = false;
+        _currCannon.userData.rotateRight = false;
         _currCannon = _cannons[1];
         _currCannon.changeColor(0x00ffff);
         break;
 
       case 81: // "Q"
         _currCannon.changeColor(0x0000ff);
+        _currCannon.userData.rotateLeft = false;
+        _currCannon.userData.rotateRight = false;
         _currCannon = _cannons[2];
         _currCannon.changeColor(0x00ffff);
         break;

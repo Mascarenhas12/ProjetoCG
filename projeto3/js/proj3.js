@@ -11,11 +11,16 @@ function Enviornment() {
 	var _scene = createScene();
 	var _renderer = createRenderer();
 
-	var _camera1 = createPerspectiveCamera(200, 200, 2000);
+	var _camera1 = createPerspectiveCamera(200, 200, 200);
 	var _camera2 = createOrtogonalCamera(0, 30, 0);
 	var _currCamera = _camera1;
 
+	var _light = new THREE.DirectionalLight( 0xffffff, 3.0 );
+	_light.position.set( 0, 300, 0);
+	_scene.add(_light);
+
 	var _fence;
+	var _icosahedron;
 
 	this.start = function() {
 		'use strict'
@@ -34,9 +39,11 @@ function Enviornment() {
 
 		var scene = new THREE.Scene();
 
-		_fence = new Fence([0,0,-50], [220,80,100,4], 0x00ff00);
+		_fence = new Fence([0,0,-50], [220,80,100,4], 0x7DA7D9);
+		_icosahedron = new Icosahedron([0,0,0]);
 
 		scene.add(_fence);
+		//scene.add(_icosahedron);
 		scene.add(new THREE.AxisHelper(10));
 
 		return scene;

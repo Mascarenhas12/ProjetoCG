@@ -29,7 +29,7 @@ class Fence extends THREE.Object3D {
 	static createBox(dim, col) {
 		return new THREE.Mesh(
 			new THREE.CubeGeometry(dim[0], dim[1], dim[2]),
-			new THREE.MeshBasicMaterial({ color: col,  wireframe:true })
+			new THREE.MeshBasicMaterial({ color: col })
 		);
 	}
 }

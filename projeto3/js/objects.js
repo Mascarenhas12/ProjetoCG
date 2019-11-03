@@ -72,12 +72,12 @@ class Cone extends THREE.Object3D {
 class Cylinder extends THREE.Object3D {
   'use strict';
 
-  constructor(pos, dim) {
+  constructor(pos, dim, color) {
     super();
 
     var mesh = new THREE.Mesh(
       new THREE.CylinderGeometry(dim[0], dim[1], dim[2], dim[3]),
-      new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: false })
+      new THREE.MeshBasicMaterial({ color: color, wireframe: false })
     );
 
     var phong = new THREE.MeshPhongMaterial(

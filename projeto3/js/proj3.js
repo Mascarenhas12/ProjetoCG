@@ -12,15 +12,17 @@ function Enviornment() {
 	var _renderer = createRenderer();
 
 	var _camera1 = createPerspectiveCamera(200, 200, 200);
-	var _camera2 = createOrtogonalCamera(0, 30, 0);
+	var _camera2 = createOrtogonalCamera(55, 40, 100);
 	var _currCamera = _camera1;
 
 	var _light = new THREE.DirectionalLight( 0xffffff, 3.0 );
-	_light.position.set( 0, 300, 0);
+	_light.position.set( 0, 150, 0);
 	_scene.add(_light);
 
 	var _fence;
+	var _painting;
 	var _icosahedron;
+	var _spotlight;
 
 	this.start = function() {
 		'use strict'
@@ -40,11 +42,15 @@ function Enviornment() {
 		var scene = new THREE.Scene();
 
 		_fence = new Fence([0,0,-50], [220,80,100,4], 0x7DA7D9);
-		_icosahedron = new Icosahedron([0,0,0]);
+		_painting = new Painting([55, 40, -95], [78, 46, 2, 1], 0x235383);
+		_icosahedron = new Icosahedron([-50,0,-50], 0x3FAF8F);
+		_spotlight = new Spotlight([0, 0, 0]);
 
 		scene.add(_fence);
-		//scene.add(_icosahedron);
-		scene.add(new THREE.AxisHelper(10));
+		scene.add(_painting);
+		scene.add(_icosahedron);
+		scene.add(_spotlight);
+		scene.add(new THREE.AxisHelper(1000));
 
 		return scene;
 	}
@@ -95,7 +101,10 @@ function Enviornment() {
     );
 
     camera.position.set(x, y, z);
-    camera.lookAt(_scene.position);
+		camera.lookAt(_painting.paintingPos);
+		camera.zoom = 4;
+
+		camera.updateProjectionMatrix();
 
     return camera;
   }
@@ -196,6 +205,9 @@ function Enviornment() {
 		_renderer.setSize(window.innerWidth, window.innerHeight);
 
 		if (_currCamera == _camera1) {
+			_currCamera.aspect = _renderer.getSize().width / _renderer.getSize().height;
+		}
+		else {
 			var ratio = window.innerWidth / window.innerHeight;
 			var view = 250;
 
@@ -203,9 +215,6 @@ function Enviornment() {
 			_currCamera.right = ratio*view / 2
 			_currCamera.top = view / 2
 			_currCamera.bottom = view / -2
-		}
-		else {
-			_currCamera.aspect = _renderer.getSize().width / _renderer.getSize().height;
 		}
 
 		_currCamera.updateProjectionMatrix();

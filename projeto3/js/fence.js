@@ -7,7 +7,7 @@ class Fence extends THREE.Object3D {
 	constructor(pos, dim, col) {
 		super();
 
-    this.floor = Fence.createBox([dim[0], dim[3], dim[2]], col);
+    this.floor = Fence.createBox([dim[0], dim[3], dim[2]], col - 0x000F00);
 		this.backWall = Fence.createBox([dim[0], dim[1], dim[3]], col);
 
 		// Relative to Fence.position

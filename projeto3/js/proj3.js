@@ -30,7 +30,6 @@ function Enviornment() {
 	var unlockMaterialChange = true;
 	var unlockLightWorld = true;
 
-	var _spolightTest;
 	var _idxMat = 2;
 	var _curr = 2;
 
@@ -57,17 +56,21 @@ function Enviornment() {
 		_painting = new Painting([55, 40, -95], [78, 46, 2, 1], 0x235383);
 		_icosahedron = new Icosahedron([-50,0,-50]);
 		_spotlight = [
-				new Spotlight([-55, 100, 50]),
-				new Spotlight([-55, 100, -50]),
-				new Spotlight([55, 100, -50]),
-				new Spotlight([55, 100, 50])
+				new Spotlight([-60, 100, 50]),
+				new Spotlight([-110, 100, -50]),
+				new Spotlight([110, 100, -50]),
+				new Spotlight([60, 100, 50])
 			];
 
 		_sceneObjects.add(_fence);
 		_sceneObjects.add(_painting);
 		_sceneObjects.add(_icosahedron);
+		for( var i = 0; i < 4 ; i++ ){
+			_sceneObjects.add(_spotlight[i]);
+		}
 		scene.add(_sceneObjects);
 		scene.add(new THREE.AxisHelper(1000));
+
 
 		return scene;
 	}

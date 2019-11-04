@@ -1,0 +1,16 @@
+class Spotlight extends THREE.Object3D{
+  'use strict';
+  constructor(pos) {
+    super();
+
+    this.unlockSpotlight = true;
+    this.light = new THREE.SpotLight(0xfffffff, 5, 150, Math.PI/16 );
+    this.helper = new THREE.SpotLightHelper(this.light);
+
+    this.add(this.light);
+    this.add(this.helper);
+
+    this.postion.set(pos[0], pos[1], pos[2]);
+    this.updateMatrixWorld();
+  }
+}

@@ -13,8 +13,7 @@ function Enviornment() {
 
 	var _camera1 = createPerspectiveCamera(200, 200, 200);
 	var _camera2 = createOrtogonalCamera(55, 40, 100);
-	var _cameratest = createPerspectiveCamera(0, 250, 0);
-	var _currCamera = _cameratest;
+	var _currCamera = _camera1;
 
 	var _light = new THREE.DirectionalLight( 0xffffff, 1.0 );
 	_light.position.set(150, 150, 150);
@@ -24,7 +23,8 @@ function Enviornment() {
 	var _fence;
 	var _painting;
 	var _icosahedron;
-	var _spotlight;
+	var _spotlights;
+	var _lamps;
 
 	var unlockApplyMaterial = true;
 	var unlockMaterialChange = true;
@@ -55,18 +55,30 @@ function Enviornment() {
 		_fence = new Fence([0,0,-50], [220,80,100,4], 0x7DA7D9);
 		_painting = new Painting([55, 40, -95], [78, 46, 2, 1], 0x235383);
 		_icosahedron = new Icosahedron([-50,0,-50]);
-		_spotlight = [
-				new Spotlight([-60, 100, 50]),
-				new Spotlight([-110, 100, -50]),
-				new Spotlight([110, 100, -50]),
-				new Spotlight([60, 100, 50])
-			];
+		_lamps =
+		[
+			new Lamp([-70, 150, 60]),
+			new Lamp([-150, 170, -50]),
+			new Lamp([150, 170, -50]),
+			new Lamp([70, 150, 60])
+		];
+
+		_spotlights =
+		[
+			new Spotlight([-70, 150, 60], [-50, 0, -100]),
+			new Spotlight([-150, 170, -50], [0, 0, -40]),
+			new Spotlight([150, 170, -50], [0, 0, -40]),
+			new Spotlight([70, 150, 60], [50, 0, -100])
+		];
+
+
 
 		_sceneObjects.add(_fence);
 		_sceneObjects.add(_painting);
 		_sceneObjects.add(_icosahedron);
 		for( var i = 0; i < 4 ; i++ ){
-			_sceneObjects.add(_spotlight[i]);
+			scene.add(_spotlights[i]);
+			_sceneObjects.add(_lamps[i]);
 		}
 		scene.add(_sceneObjects);
 		scene.add(new THREE.AxisHelper(1000));
@@ -154,16 +166,31 @@ function Enviornment() {
 
 		switch (e.keyCode) {
 			case 49: // "1"
+				if(_spotlights[0].unlockSpotlight){
+					_spotlights[0].unlockSpotlight = false;
+					_spotlights[0].light.visible = !_spotlights[0].light.visible;
+				}
 				break;
 
 			case 50: // "2"
+				if(_spotlights[1].unlockSpotlight){
+					_spotlights[1].unlockSpotlight = false;
+					_spotlights[1].light.visible = !_spotlights[1].light.visible;
+				}
 				break;
 
 			case 51: // "3"
+				if(_spotlights[2].unlockSpotlight){
+					_spotlights[2].unlockSpotlight = false;
+					_spotlights[2].light.visible = !_spotlights[2].light.visible;
+				}
 				break;
 
       case 52: // "4"
-					_currCamera = _cameratest;
+				if(_spotlights[3].unlockSpotlight){
+					_spotlights[3].unlockSpotlight = false;
+					_spotlights[3].light.visible = !_spotlights[3].light.visible;
+				}
 				break;
 
       case 53: // "5"
@@ -225,15 +252,19 @@ function Enviornment() {
 
 		switch (e.keyCode) {
       case 49: // "1"
+				_spotlights[0].unlockSpotlight = true;
 				break;
 
 			case 50: // "2"
+				_spotlights[1].unlockSpotlight = true;
 				break;
 
 			case 51: // "3"
+				_spotlights[2].unlockSpotlight = true;
 				break;
 
       case 52: // "4"
+				_spotlights[3].unlockSpotlight = true;
 				break;
 
       case 69: // "E"

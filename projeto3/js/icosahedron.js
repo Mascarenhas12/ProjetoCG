@@ -1,23 +1,39 @@
 class Icosahedron extends THREE.Object3D {
   'use strict';
 
-  constructor(pos,col) {
+  constructor(pos) {
     super();
 
     this.group = new THREE.Group();
 
     var geo = new THREE.Geometry();
-    var mat = new THREE.MeshBasicMaterial({color: col});
+    var mat = new THREE.MeshPhongMaterial({color: 0x3FAF8F});
 
     this.martelo(geo);
 
-    var ico= new THREE.Mesh(geo, materials);
-    ico.position.set(0,0+35,0);
-    var cylinder = Icosahedron.createCylinder([8,8,20,64],0x126384);
-    cylinder.position.set(0,10,0);
+    geo.computeFaceNormals();
 
-    this.group.add(ico);
-    this.group.add(cylinder);
+    this.ico = new THREE.Mesh(geo, mat);
+    this.ico.position.set(0,0+45,0);
+    this.ico.materials =
+    [
+      new THREE.MeshBasicMaterial({color: 0x3FAF8F}),
+      new THREE.MeshLambertMaterial({color: 0x3FAF8F}),
+      mat
+    ];
+
+
+    this.cylinder = Icosahedron.createCylinder([10,10,30,64],0x126384);
+    this.cylinder.position.set(0,15,0);
+    this.cylinder.materials =
+    [
+      new THREE.MeshBasicMaterial({color: 0x126384}),
+      new THREE.MeshLambertMaterial({color: 0x126384}),
+      new THREE.MeshPhongMaterial({color: 0x126384})
+    ];
+
+    this.group.add(this.ico);
+    this.group.add(this.cylinder);
     this.add(this.group);
 
     this.position.set(pos[0], pos[1], pos[2]);
@@ -28,25 +44,30 @@ class Icosahedron extends THREE.Object3D {
   static createCylinder(dim, col) {
 		return new THREE.Mesh(
 			new THREE.CylinderGeometry(dim[0], dim[1], dim[2], dim[3]),
-			new THREE.MeshBasicMaterial({ color: col })
+			new THREE.MeshPhongMaterial({ color: col })
 		);
 	}
+
+  changeMaterial(matIdx) {
+    this.ico.material = this.ico.materials[matIdx];
+    this.cylinder.material = this.cylinder.materials[matIdx];
+  }
 
   martelo(geo){
     const phi = ( 1 + Math.sqrt( 5 ) ) / 2;
 
-    geo.vertices.push(new THREE.Vector3(-1,phi,0).multiplyScalar(5)); //0
-    geo.vertices.push(new THREE.Vector3(1,phi,0).multiplyScalar(5)); //1
-    geo.vertices.push(new THREE.Vector3(-1,-phi,0).multiplyScalar(5)); //2
-    geo.vertices.push(new THREE.Vector3(1,-phi,0).multiplyScalar(5)); //3
-    geo.vertices.push(new THREE.Vector3(0,-1,phi).multiplyScalar(5)); //4
-    geo.vertices.push(new THREE.Vector3(0,1,phi).multiplyScalar(5)); //5
-    geo.vertices.push(new THREE.Vector3(0,-1,-phi).multiplyScalar(5)); //6
-    geo.vertices.push(new THREE.Vector3(0,1,-phi).multiplyScalar(5)); //7
-    geo.vertices.push(new THREE.Vector3(phi,0,-1).multiplyScalar(5)); //8
-    geo.vertices.push(new THREE.Vector3(phi,0,1).multiplyScalar(5)); //9
-    geo.vertices.push(new THREE.Vector3(-phi,0,-1).multiplyScalar(5)); //10
-    geo.vertices.push(new THREE.Vector3(-phi,0,1).multiplyScalar(5)); //11
+    geo.vertices.push(new THREE.Vector3(-1,phi,0).multiplyScalar(10)); //0
+    geo.vertices.push(new THREE.Vector3(1,phi,0).multiplyScalar(10)); //1
+    geo.vertices.push(new THREE.Vector3(-1,-phi,0).multiplyScalar(10)); //2
+    geo.vertices.push(new THREE.Vector3(1,-phi,0).multiplyScalar(10)); //3
+    geo.vertices.push(new THREE.Vector3(0,-1,phi).multiplyScalar(10)); //4
+    geo.vertices.push(new THREE.Vector3(0,1,phi).multiplyScalar(10)); //5
+    geo.vertices.push(new THREE.Vector3(0,-1,-phi).multiplyScalar(10)); //6
+    geo.vertices.push(new THREE.Vector3(0,1,-phi).multiplyScalar(10)); //7
+    geo.vertices.push(new THREE.Vector3(phi,0,-1).multiplyScalar(10)); //8
+    geo.vertices.push(new THREE.Vector3(phi,0,1).multiplyScalar(10)); //9
+    geo.vertices.push(new THREE.Vector3(-phi,0,-1).multiplyScalar(10)); //10
+    geo.vertices.push(new THREE.Vector3(-phi,0,1).multiplyScalar(10)); //11
 
     geo.faces.push(new THREE.Face3(0,11,5));
     geo.faces.push(new THREE.Face3(0,5,1));

@@ -56,18 +56,18 @@ class Icosahedron extends THREE.Object3D {
   martelo(geo){
     const phi = ( 1 + Math.sqrt( 5 ) ) / 2;
 
-    geo.vertices.push(new THREE.Vector3(-1,phi,0).multiplyScalar(10)); //0
-    geo.vertices.push(new THREE.Vector3(1,phi,0).multiplyScalar(10)); //1
-    geo.vertices.push(new THREE.Vector3(-1,-phi,0).multiplyScalar(10)); //2
-    geo.vertices.push(new THREE.Vector3(1,-phi,0).multiplyScalar(10)); //3
-    geo.vertices.push(new THREE.Vector3(0,-1,phi).multiplyScalar(10)); //4
-    geo.vertices.push(new THREE.Vector3(0,1,phi).multiplyScalar(10)); //5
-    geo.vertices.push(new THREE.Vector3(0,-1,-phi).multiplyScalar(10)); //6
-    geo.vertices.push(new THREE.Vector3(0,1,-phi).multiplyScalar(10)); //7
-    geo.vertices.push(new THREE.Vector3(phi,0,-1).multiplyScalar(10)); //8
-    geo.vertices.push(new THREE.Vector3(phi,0,1).multiplyScalar(10)); //9
-    geo.vertices.push(new THREE.Vector3(-phi,0,-1).multiplyScalar(10)); //10
-    geo.vertices.push(new THREE.Vector3(-phi,0,1).multiplyScalar(10)); //11
+    geo.vertices.push(new THREE.Vector3(-1,phi,0).multiplyScalar(10 + Math.random()*3)); //0
+    geo.vertices.push(new THREE.Vector3(1,phi,0).multiplyScalar(10 + Math.random()*3)); //1
+    geo.vertices.push(new THREE.Vector3(-1,-phi,0).multiplyScalar(10 + Math.random()*3)); //2
+    geo.vertices.push(new THREE.Vector3(1,-phi,0).multiplyScalar(10 + Math.random()*3)); //3
+    geo.vertices.push(new THREE.Vector3(0,-1,phi).multiplyScalar(10 + Math.random()*3)); //4
+    geo.vertices.push(new THREE.Vector3(0,1,phi).multiplyScalar(10 + Math.random()*3)); //5
+    geo.vertices.push(new THREE.Vector3(0,-1,-phi).multiplyScalar(10 + Math.random()*3)); //6
+    geo.vertices.push(new THREE.Vector3(0,1,-phi).multiplyScalar(10 + Math.random()*3)); //7
+    geo.vertices.push(new THREE.Vector3(phi,0,-1).multiplyScalar(10 + Math.random()*3)); //8
+    geo.vertices.push(new THREE.Vector3(phi,0,1).multiplyScalar(10 + Math.random()*3)); //9
+    geo.vertices.push(new THREE.Vector3(-phi,0,-1).multiplyScalar(10 + Math.random()*3)); //10
+    geo.vertices.push(new THREE.Vector3(-phi,0,1).multiplyScalar(10 + Math.random()*3)); //11
 
     geo.faces.push(new THREE.Face3(0,11,5));
     geo.faces.push(new THREE.Face3(0,5,1));

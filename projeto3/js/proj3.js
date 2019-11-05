@@ -71,8 +71,6 @@ function Enviornment() {
 			new Spotlight([70, 150, 60], [50, 0, -100])
 		];
 
-
-
 		_sceneObjects.add(_fence);
 		_sceneObjects.add(_painting);
 		_sceneObjects.add(_icosahedron);
@@ -81,8 +79,7 @@ function Enviornment() {
 			_sceneObjects.add(_lamps[i]);
 		}
 		scene.add(_sceneObjects);
-		scene.add(new THREE.AxisHelper(1000));
-
+		//scene.add(new THREE.AxisHelper(1000));
 
 		return scene;
 	}

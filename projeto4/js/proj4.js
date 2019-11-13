@@ -15,18 +15,26 @@ function Enviornment() {
 	var _camera2 = createOrtogonalCamera(55, 40, 100);
 	var _currCamera = _camera1;
 
-	var _light = new THREE.DirectionalLight( 0xffffff, 1.0 );
-	_light.position.set(150, 150, 150);
+	var _light = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
+	_light.position.set(120, 150, 150);
 	_scene.add(_light);
 
-	/*var _sceneObjects;
+	var _pointLight = new THREE.PointLight( 0xFFFFFF, 1.0, 100 );
+	_pointLight.position.set(50, 50, 50);
+	_scene.add(_pointLight);
 
-	var unlockApplyMaterial = true;
-	var unlockMaterialChange = true;
+	var _table;
+	var _dice;
+	var _ball;
+	var _pauseMenu;
+
 	var unlockLightWorld = true;
+	var unlockLightPontual = true;
+	var unlockApplyMaterial = true;
+	var unlockPauseMenu = true;
+	var unlockVisibility = true;
 
-	var _idxMat = 2;
-	var _curr = 2;*/
+	var _sceneObjects;
 
 	this.start = function() {
 		'use strict'
@@ -45,7 +53,18 @@ function Enviornment() {
 
 		var scene = new THREE.Scene();
 
-		//_sceneObjects = new THREE.Group();
+		_sceneObjects = new THREE.Group();
+
+		_table = new Table([0, 0, 0], [50, 10, 50], '../images/chess.jpg');
+		//_dice = new Dice([0, 50, 0], [10, 10, 10], '../images/dice.jpg');
+		//_ball = new Ball([30, 50, 0], [10, 10, 10], '../images/ball.jpg');
+		//_pauseMenu = new PauseMenu([30, 50, 0], [10, 10, 10], '../images/ball.jpg');
+
+		_sceneObjects.add(_table);
+		//_sceneObjects.add(_dice);
+		//_sceneObjects.add(_ball);
+
+		scene.add(_sceneObjects);
 
 		scene.add(new THREE.AxisHelper(50));
 
@@ -98,8 +117,7 @@ function Enviornment() {
     );
 
     camera.position.set(x, y, z);
-		camera.lookAt(0 ,0 ,0);
-		camera.zoom = 4;
+		camera.lookAt(_scene.position);
 
 		camera.updateProjectionMatrix();
 
@@ -119,6 +137,14 @@ function Enviornment() {
 		'use strict'
 
 		var deltaTime = _clock.getDelta();
+
+		_sceneObjects.children.forEach((object) => {
+			if (object.canMove) {
+				object.move(deltaTime);
+			}
+		});
+
+		var deltaTime = _clock.getDelta();
 	}
 
 	function render() {
@@ -130,69 +156,73 @@ function Enviornment() {
 		'use strict'
 
 		switch (e.keyCode) {
-			case 49: // "1"
-			
+			case 66: // "B - Parar Bola"
+				if (_ball.unlockMotion) {
+					_ball.unlockMotion = false;
+					_ball.canMove = !_ball.canMove;
+				}
 				break;
 
-			case 50: // "2"
-				
-				break;
-
-			case 51: // "3"
-			
-				break;
-
-      case 52: // "4"
-				
-				break;
-
-      case 53: // "5"
-				_currCamera = _camera1;
-				onResize();
-				break;
-
-      case 54: // "6"
-				_currCamera = _camera2;
-				onResize();
-				break;
-
-			case 69: // "E"
-				/*if (unlockMaterialChange) {
-					unlockMaterialChange = false;
-					_idxMat = (_idxMat % 2) + 1;
-
-					if (_curr != 0) {
-						_curr = _idxMat
-						_sceneObjects.children.forEach((object) => {
-							object.changeMaterial(_curr);
-						});
-					}
-				}*/
-				break;
-
-			case 81: // "Q"
+			case 68: // "D - Luz Direcional"
 				if (unlockLightWorld) {
 					unlockLightWorld = false;
-
 					_light.visible = !_light.visible;
 				}
 				break;
 
-			case 87: // "W"
-				/*if (unlockApplyMaterial) {
+			case 76: // "L - Ligar/Desligar Iluminação"
+				if (unlockApplyMaterial) {
 					unlockApplyMaterial = false;
 
-					if(_curr != 0){
-						_curr = 0;
-					}
-					else{
-						_curr = _idxMat;
-					}
+					_sceneObjects.children.forEach((object) => {
+						object.changeMaterial();
+					});
+				}
+				break;
+
+      case 80: // "P - Luz Pontual"
+				if (unlockLightPontual) {
+					unlockLightPontual = false;
+					_pointLight.visible = !_pointLight.visible;
+				}
+				break;
+
+			case 82: // "R - Reset da cena"
+				if (_pauseMenu.visible) {
+					_currCamera = _camera1;
+					_pauseMenu.visible = !_pauseMenu.visible;
+
+					// TODO Reset da cena
+				}
+				break;
+
+			case 83: // "S - Pausar/Retomar a cena"
+				if (unlockPauseMenu) {
+					unlockPauseMenu = false;
 
 					_sceneObjects.children.forEach((object) => {
-						object.changeMaterial(_curr);
+						object.canMove = false;
 					});
-				}*/
+
+					if (_currCamera == _camera1) {
+						_currCamera = _camera2;
+					} else {
+						_currCamera = _camera1;
+					}
+
+					_pauseMenu.visible = !_pauseMenu.visible;
+				}
+				onResize();
+				break;
+
+			case 87: // "W - Wireframe"
+				if (unlockVisibility) {
+					unlockVisibility = false;
+
+					_sceneObjects.children.forEach((object) => {
+						object.changeVisibility();
+					});
+				}
 				break;
 
 			default:
@@ -204,36 +234,31 @@ function Enviornment() {
 		'use strict'
 
 		switch (e.keyCode) {
-      case 49: // "1"
-
+			case 66: // "B - Parar Bola"
+				_ball.unlockMotion = true;
 				break;
 
-			case 50: // "2"
-				
-				break;
-
-			case 51: // "3"
-				
-				break;
-
-     		 case 52: // "4"
-				
-				break;
-
-			case 68: // "E"
+			case 68: // "D - Luz Direcional"
 				unlockLightWorld = true;
 				break;
 
-      		case 69: // "E"
-				//unlockMaterialChange = true;
+			case 76: // "L - Ligar/Desligar Iluminação"
+				unlockApplyMaterial = true;
 				break;
 
-			case 81: // "Q"
-				
+      case 80: // "P - Luz Pontual"
+				unlockLightPontual = true;
 				break;
 
-			case 87: // "W"
-				//unlockApplyMaterial = true;
+			case 82: // "R - Reset da cena"
+				break;
+
+			case 83: // "S - Pausar/Retomar a cena"
+				unlockPauseMenu = true;
+				break;
+
+			case 87: // "W - Wireframe"
+				unlockVisibility = true;
 				break;
 
 			default:

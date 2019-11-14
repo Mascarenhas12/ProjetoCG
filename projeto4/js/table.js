@@ -1,24 +1,26 @@
 class Table extends THREE.Object3D {
   'use strict';
 
-  constructor(pos, dim, img) {
+  constructor(pos, dim, text, img) {
     super();
 
     this.canMove = false;
 
-    var text = this.createTexture(img);
-    this.box = Table.createBox(dim,text);
+    var map = this.createTexture(text);
+    var bump = this.createTexture(img);
+    this.box = Table.createBox(dim,map,bump);
     this.add(this.box);
     this.position.set(pos[0], pos[1], pos[2]);
 
   }
 
-  static createBox(dim,text) {
+  static createBox(dim,map,bump) {
+    var mat = new THREE.MeshPhongMaterial({map: map,bumpMap: bump});
+    mat.bumpScale = 0.1;
     return new THREE.Mesh(
       new THREE.CubeGeometry(dim[0], dim[1], dim[2]),
-      new THREE.MeshPhongMaterial({map: text})
+      mat
     );
-    //new THREE.MeshPhongMaterial({map: text,bumpMap: text})
   }
 
   createTexture(img) {
@@ -27,10 +29,13 @@ class Table extends THREE.Object3D {
 
     texture.encoding = THREE.sRGBEncoding;
     texture.anisotropy = 16; //valores possíveis sao 2^n
+    texture.wrapS = texture.wrapT= THREE.RepeatWrapping;
     return texture;
   }
 
-  move(deltaTime) {}
+  move(deltaTime) {
+
+  }
 
   changeMaterial() {
     // TODO Phong to Basic and vice versa
@@ -38,5 +43,6 @@ class Table extends THREE.Object3D {
 
   changeVisibility() {
   // TODO wireframe = !wireframe
+    this.box.wireframe = !this.box.wireframe;
   }
 }

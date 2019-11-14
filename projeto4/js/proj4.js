@@ -11,7 +11,7 @@ function Enviornment() {
 	var _scene = createScene();
 	var _renderer = createRenderer();
 
-	var _camera1 = createPerspectiveCamera(200, 200, 200);
+	var _camera1 = createPerspectiveCamera(50, 50, 50);
 	var _camera2 = createOrtogonalCamera(55, 40, 100);
 	var _currCamera = _camera1;
 
@@ -55,7 +55,7 @@ function Enviornment() {
 
 		_sceneObjects = new THREE.Group();
 
-		_table = new Table([0, 0, 0], [50, 10, 50], '../images/chess.jpg');
+		_table = new Table([0, 0, 0], [50, 10, 50], '../images/board.png','../images/wood.jpg');
 		//_dice = new Dice([0, 50, 0], [10, 10, 10], '../images/dice.jpg');
 		//_ball = new Ball([30, 50, 0], [10, 10, 10], '../images/ball.jpg');
 		//_pauseMenu = new PauseMenu([30, 50, 0], [10, 10, 10], '../images/ball.jpg');

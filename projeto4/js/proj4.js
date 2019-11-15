@@ -58,12 +58,12 @@ function Enviornment() {
 		_sceneObjects = new THREE.Group();
 
 		_table = new Table([0, -1.5, 0], [50, 3, 50], '../images/board.png','../images/wood.jpg');
-		//_dice = new Dice([0, 4.2, 0], [5, 5, 5], '../images/dice.jpg');
+		_dice = new Dice([0, 4.2, 0], [5, 5, 5]);
 		_ball = new Ball([20, 4, 0], [4, 64, 64], '../images/ball.png');
 		_pauseMenu = new PauseMenu([50, 0, 0], [1, 300, 550], '../images/pause.jpg');
 
 		_sceneObjects.add(_table);
-		//_sceneObjects.add(_dice);
+		_sceneObjects.add(_dice);
 		_sceneObjects.add(_ball);
 		_sceneObjects.add(_pauseMenu);
 		_pauseMenu.visible = false;

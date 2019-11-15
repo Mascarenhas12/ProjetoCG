@@ -1,40 +1,56 @@
 class Dice extends THREE.Object3D {
   'use strict';
 
-  constructor(pos, dim, text) {
+  constructor(pos, dim) {
     super();
-
     this.canMove = true;
 
-    this.phong = [
-      new THREE.MeshPhongMaterial({map:'../images/dice1.png',bumpMap:'../images/bump1.png'}),
-      new THREE.MeshPhongMaterial({map:'../images/dice2.png',bumpMap:'../images/bump2.png'}),
-      new THREE.MeshPhongMaterial({map:'../images/dice3.png',bumpMap:'../images/bump3.png'}),
-      new THREE.MeshPhongMaterial({map:'../images/dice4.png',bumpMap:'../images/bump4.png'}),
-      new THREE.MeshPhongMaterial({map:'../images/dice5.png',bumpMap:'../images/bump5.png'}),
-      new THREE.MeshPhongMaterial({map:'../images/dice6.png',bumpMap:'../images/bump6.png'}),
-    ]
+    var dice = [
+      this.createTexture('../images/dice1.png'),
+      this.createTexture('../images/dice2.png'),
+      this.createTexture('../images/dice3.png'),
+      this.createTexture('../images/dice4.png'),
+      this.createTexture('../images/dice5.png'),
+      this.createTexture('../images/dice6.png')
+    ];
 
-    this.basic = [
-      new THREE.MeshBasicMaterial({map:'../images/dice1.png'}),
-      new THREE.MeshBasicMaterial({map:'../images/dice2.png'}),
-      new THREE.MeshBasicMaterial({map:'../images/dice3.png'}),
-      new THREE.MeshBasicMaterial({map:'../images/dice4.png'}),
-      new THREE.MeshBasicMaterial({map:'../images/dice5.png'}),
-      new THREE.MeshBasicMaterial({map:'../images/dice6.png'}),
-    ]
+    var bump =[
+      this.createTexture('../images/bump1.png'),
+      this.createTexture('../images/bump2.png'),
+      this.createTexture('../images/bump3.png'),
+      this.createTexture('../images/bump4.png'),
+      this.createTexture('../images/bump5.png'),
+      this.createTexture('../images/bump6.png')
+    ];
 
-    this.box1 = Dice.createBox(dim, this.phong);
-    this.box2 = Dice.createBox(dim, this.basic);
-    this.box2.visible = false;
-    this.group = new THREE.Group();
-    this.group.add(this.box1);
-    this.group.add(this.box2);
-    this.add(this.group);
+    var phong = [
+      new THREE.MeshPhongMaterial({map:dice[0],bumpMap:bump[0],wireframe:false}),
+      new THREE.MeshPhongMaterial({map:dice[1],bumpMap:bump[1],wireframe:false}),
+      new THREE.MeshPhongMaterial({map:dice[2],bumpMap:bump[2],wireframe:false}),
+      new THREE.MeshPhongMaterial({map:dice[3],bumpMap:bump[3],wireframe:false}),
+      new THREE.MeshPhongMaterial({map:dice[4],bumpMap:bump[4],wireframe:false}),
+      new THREE.MeshPhongMaterial({map:dice[5],bumpMap:bump[5],wireframe:false})
+    ];
+
+    var basic = [
+      new THREE.MeshBasicMaterial({map:dice[0],wireframe:false}),
+      new THREE.MeshBasicMaterial({map:dice[1],wireframe:false}),
+      new THREE.MeshBasicMaterial({map:dice[2],wireframe:false}),
+      new THREE.MeshBasicMaterial({map:dice[3],wireframe:false}),
+      new THREE.MeshBasicMaterial({map:dice[4],wireframe:false}),
+      new THREE.MeshBasicMaterial({map:dice[5],wireframe:false})
+    ];
+
+    this.mat = [phong,basic];
+
+    this.box = Dice.createBox(dim,phong);
+
+    this.box.add(new THREE.AxisHelper(20));
+    this.add(this.box);
 
     //center_to_floor = dice_edge * Math.sqrt(3, 2);
-    this.group.rotation.z = Math.PI/4;
-    this.group.rotation.x = Math.atan(Math.sqrt(1/2));
+    this.box.rotation.z = Math.PI/4;
+    this.box.rotation.x = Math.atan(Math.sqrt(1/2));
     this.position.set(pos[0], pos[1], pos[2]);
   }
 
@@ -45,8 +61,7 @@ class Dice extends THREE.Object3D {
 
   changeMaterial(matIdx) {
     // TODO Phong to Basic and vice versa
-    this.box1.visible = !this.box1.visible;
-    this.box2.visible = !this.box2.visible;
+    this.box.material = this.mat[matIdx];
   }
 
   changeVisibility() {
@@ -56,8 +71,8 @@ class Dice extends THREE.Object3D {
 
   static createBox(dim,mat) {
     return new THREE.Mesh(
-      new THREE.CubeGeometry(dim[0], dim[1], dim[2],1,1,1,mat),
-      new THREE.MeshFaceMaterial({wireframe:false})
+      new THREE.CubeGeometry(dim[0], dim[1], dim[2]),
+      mat
     );
   }
 

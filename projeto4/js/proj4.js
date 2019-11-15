@@ -6,7 +6,7 @@ function Enviornment() {
 	'use strict'
 
 	var _clock = new THREE.Clock(true);
-	var _auxVector = new THREE.Vector3();
+	var deltaTime;
 
 	var _scene = createScene();
 	var _renderer = createRenderer();
@@ -140,18 +140,16 @@ function Enviornment() {
 	function update() {
 		'use strict'
 
-		if(_pauseMenu.visible){
-			var deltaTime = 0;
-			 _clock.getDelta();
+		if (_pauseMenu.visible) {
+			deltaTime = 0;
+			_clock.getDelta();
 		}
-		else{
-			var deltaTime = _clock.getDelta();
+		else {
+			deltaTime = _clock.getDelta();
 		}
 
 		_sceneObjects.children.forEach((object) => {
-			if (object.canMove) {
-				object.move(deltaTime);
-			}
+			object.move(deltaTime);
 		});
 	}
 
@@ -165,9 +163,15 @@ function Enviornment() {
 
 		switch (e.keyCode) {
 			case 66: // "B - Parar Bola"
-				if (_ball.unlockMotion) {
-					_ball.unlockMotion = false;
-					_ball.canMove = !_ball.canMove;
+				if (_ball.unlockChangeAcc) {
+					_ball.unlockChangeAcc = false;
+
+					if (_ball.acceleration == 0) {
+						_ball.acceleration = 1;
+					}
+					else {
+						_ball.acceleration *= -1;
+					}
 				}
 				break;
 
@@ -243,7 +247,7 @@ function Enviornment() {
 
 		switch (e.keyCode) {
 			case 66: // "B - Parar Bola"
-				_ball.unlockMotion = true;
+				_ball.unlockChangeAcc = true;
 				break;
 
 			case 68: // "D - Luz Direcional"

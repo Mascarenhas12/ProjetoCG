@@ -11,8 +11,8 @@ function Enviornment() {
 	var _scene = createScene();
 	var _renderer = createRenderer();
 
-	var _camera1 = createPerspectiveCamera(50, 50, 50);
-	var _camera2 = createOrtogonalCamera(55, 40, 100);
+	var _camera1 = createPerspectiveCamera(50, 10, 50);
+	var _camera2 = createOrtogonalCamera(40, 0, 0);
 	var _currCamera = _camera1;
 
 	var _light = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
@@ -33,6 +33,8 @@ function Enviornment() {
 	var unlockApplyMaterial = true;
 	var unlockPauseMenu = true;
 	var unlockVisibility = true;
+	var unlockReset = true;
+	var idx = 0;
 
 	var _sceneObjects;
 
@@ -55,14 +57,16 @@ function Enviornment() {
 
 		_sceneObjects = new THREE.Group();
 
-		_table = new Table([0, 0, 0], [50, 10, 50], '../images/board.png','../images/wood.jpg');
-		//_dice = new Dice([0, 50, 0], [10, 10, 10], '../images/dice.jpg');
-		//_ball = new Ball([30, 50, 0], [10, 10, 10], '../images/ball.jpg');
-		//_pauseMenu = new PauseMenu([30, 50, 0], [10, 10, 10], '../images/ball.jpg');
+		_table = new Table([0, -1.5, 0], [50, 3, 50], '../images/board.png','../images/wood.jpg');
+		//_dice = new Dice([0, 4.2, 0], [5, 5, 5], '../images/dice.jpg');
+		_ball = new Ball([20, 4, 0], [4, 64, 64], '../images/ball.png');
+		_pauseMenu = new PauseMenu([50, 0, 0], [1, 300, 550], '../images/pause.jpg');
 
 		_sceneObjects.add(_table);
 		//_sceneObjects.add(_dice);
-		//_sceneObjects.add(_ball);
+		_sceneObjects.add(_ball);
+		_sceneObjects.add(_pauseMenu);
+		_pauseMenu.visible = false;
 
 		scene.add(_sceneObjects);
 
@@ -117,7 +121,7 @@ function Enviornment() {
     );
 
     camera.position.set(x, y, z);
-		camera.lookAt(_scene.position);
+		camera.lookAt(_pauseMenu.position);
 
 		camera.updateProjectionMatrix();
 
@@ -136,15 +140,19 @@ function Enviornment() {
 	function update() {
 		'use strict'
 
-		var deltaTime = _clock.getDelta();
+		if(_pauseMenu.visible){
+			var deltaTime = 0;
+			 _clock.getDelta();
+		}
+		else{
+			var deltaTime = _clock.getDelta();
+		}
 
 		_sceneObjects.children.forEach((object) => {
 			if (object.canMove) {
 				object.move(deltaTime);
 			}
 		});
-
-		var deltaTime = _clock.getDelta();
 	}
 
 	function render() {
@@ -175,7 +183,7 @@ function Enviornment() {
 					unlockApplyMaterial = false;
 
 					_sceneObjects.children.forEach((object) => {
-						object.changeMaterial();
+						object.changeMaterial(idx = ((idx + 1) % 2));
 					});
 				}
 				break;
@@ -188,11 +196,15 @@ function Enviornment() {
 				break;
 
 			case 82: // "R - Reset da cena"
-				if (_pauseMenu.visible) {
-					_currCamera = _camera1;
-					_pauseMenu.visible = !_pauseMenu.visible;
 
-					// TODO Reset da cena
+			if(unlockReset){
+				unlockReset = false;
+					if (_pauseMenu.visible) {
+						this.ball.velocity = 0;
+						this.ball.position.set(20, 4, 0);
+						_pauseMenu.visible = !_pauseMenu.visible;
+						_currCamera = _camera1;
+					}
 				}
 				break;
 
@@ -200,18 +212,14 @@ function Enviornment() {
 				if (unlockPauseMenu) {
 					unlockPauseMenu = false;
 
-					_sceneObjects.children.forEach((object) => {
-						object.canMove = false;
-					});
-
 					if (_currCamera == _camera1) {
 						_currCamera = _camera2;
 					} else {
 						_currCamera = _camera1;
 					}
-
 					_pauseMenu.visible = !_pauseMenu.visible;
 				}
+
 				onResize();
 				break;
 
@@ -251,6 +259,7 @@ function Enviornment() {
 				break;
 
 			case 82: // "R - Reset da cena"
+				unlockReset = true;
 				break;
 
 			case 83: // "S - Pausar/Retomar a cena"

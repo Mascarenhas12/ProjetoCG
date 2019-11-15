@@ -1,6 +1,9 @@
-class sceneObjects extends THREE.Group{
+class SceneObjects extends THREE.Group {
+
   constructor(){
     super();
+
+    this.unlockApplyMaterial = true;
   }
 
   add(obj){

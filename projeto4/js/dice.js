@@ -3,8 +3,7 @@ class Dice extends THREE.Object3D {
 
   constructor(pos, dim) {
     super();
-    this.canMove = true;
-
+    
     var dice = [
       this.createTexture('../images/dice1.png'),
       this.createTexture('../images/dice2.png'),
@@ -66,7 +65,11 @@ class Dice extends THREE.Object3D {
 
   changeVisibility() {
     // TODO wireframe = !wireframe
-    this.box.wireframe = !this.box.wireframe;
+    for( var i = 0; i < 2; i++){
+      for ( var j = 0; j < 6; j++){
+        this.mat[i][j].wireframe = !this.mat[i][j].wireframe;
+      }
+    }
   }
 
   static createBox(dim,mat) {
@@ -85,4 +88,16 @@ class Dice extends THREE.Object3D {
     texture.wrapS = texture.wrapT= THREE.RepeatWrapping;
     return texture;
   }
+
+  reset(){
+    this.mat[0].forEach((node)=>{
+      node.wireframe = false;
+    });
+    this.mat[1].forEach((node)=>{
+      node.wireframe = false;
+    });
+    this.box.material = this.mat[0];
+
+  }
+
 }

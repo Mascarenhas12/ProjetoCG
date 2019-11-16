@@ -40,7 +40,7 @@ class Table extends THREE.Object3D {
   }
 
   move(deltaTime) {
-
+    //nothing
   }
 
   changeMaterial(matIdx) {
@@ -50,6 +50,14 @@ class Table extends THREE.Object3D {
 
   changeVisibility() {
   // TODO wireframe = !wireframe
-    this.box.wireframe = !this.box.wireframe;
+    this.mat[0].wireframe = !this.mat[0].wireframe;
+    this.mat[1].wireframe = !this.mat[1].wireframe;
+  }
+
+  reset(){
+    this.mat.forEach((node)=>{
+      node.wireframe = false;
+    });
+    this.box.material = this.mat[0];
   }
 }

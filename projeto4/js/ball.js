@@ -19,8 +19,8 @@ class Ball extends THREE.Object3D {
 		var texture = Ball.createTexture( img );
 
 		this.materials = [
-			new THREE.MeshPhongMaterial({ map: texture }),
-			new THREE.MeshBasicMaterial({ map: texture })
+			new THREE.MeshPhongMaterial({ map: texture, specular: 0xFFFFFF, wireframe: 	false}),
+			new THREE.MeshBasicMaterial({ map: texture, wireframe:false})
 		];
 
 		this.sphere = Ball.createSphere( dim, this.materials[0] );
@@ -87,10 +87,22 @@ class Ball extends THREE.Object3D {
 	}
 
 	changeMaterial(matIdx) {
-		this.sphere.material = this.mat[matIdx];
+		this.sphere.material = this.materials[matIdx];
 	}
 
 	changeVisibility() {
-		this.sphere.material.wireframe = !this.sphere.material.wireframe;
+		this.materials[0].wireframe = !this.materials[0].wireframe;
+    this.materials[1].wireframe = !this.materials[1].wireframe;
+	}
+
+	reset(pos){
+		this.angle = 0;
+		this.velScalar = 0;
+		this.velocity = [0,0];
+		this.acceleration = 0;
+		this.materials[0].wireframe = false;
+    this.materials[1].wireframe = false;
+		this.sphere.material = this.materials[0];
+		this.position.set(pos[0],pos[1],pos[2]);
 	}
 }

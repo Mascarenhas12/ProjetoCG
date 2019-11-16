@@ -11,16 +11,16 @@ function Enviornment() {
 	var _scene = createScene();
 	var _renderer = createRenderer();
 
-	var _camera1 = createPerspectiveCamera(50, 10, 50);
+	var _camera1 = createPerspectiveCamera(60, 60, 0);
 	var _camera2 = createOrtogonalCamera(40, 0, 0);
 	var _currCamera = _camera1;
 
-	var _light = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
-	_light.position.set(120, 150, 150);
+	var _light = new THREE.DirectionalLight( 0xFFFFFF, 1.5 );
+	_light.position.set(30, 120, 150);
 	_scene.add(_light);
 
-	var _pointLight = new THREE.PointLight( 0xFFFFFF, 1.0, 100 );
-	_pointLight.position.set(50, 50, 50);
+	var _pointLight = new THREE.PointLight( 0xFFFFFF, 5.0, 100 );
+	_pointLight.position.set(0, 10, 0);
 	_scene.add(_pointLight);
 
 	var _table;
@@ -35,7 +35,7 @@ function Enviornment() {
 	var unlockVisibility = true;
 	var unlockReset = true;
 	var idx = 0;
-
+	var pause = false;
 	var _sceneObjects;
 
 	this.start = function() {
@@ -59,16 +59,16 @@ function Enviornment() {
 
 		_table = new Table([0, -1.5, 0], [50, 3, 50], '../images/board.png','../images/wood.jpg');
 		_dice = new Dice([0, 4.2, 0], [5, 5, 5]);
-		_ball = new Ball([20, 4, 0], [4, 64, 64], '../images/ball.png');
-		_pauseMenu = new PauseMenu([50, 0, 0], [1, 300, 550], '../images/pause.jpg');
+		_ball = new Ball([20, 4, 0], [4, 16, 16], '../images/ball.png');
+		_pauseMenu = new PauseMenu([50, 0, 0], [1, 300, 550], '../images/pause5.png');
 
 		_sceneObjects.add(_table);
 		_sceneObjects.add(_dice);
 		_sceneObjects.add(_ball);
-		_sceneObjects.add(_pauseMenu);
 		_pauseMenu.visible = false;
 
 		scene.add(_sceneObjects);
+		scene.add(_pauseMenu);
 
 		scene.add(new THREE.AxisHelper(50));
 
@@ -140,7 +140,7 @@ function Enviornment() {
 	function update() {
 		'use strict'
 
-		if (_pauseMenu.visible) {
+		if (pause) {
 			deltaTime = 0;
 			_clock.getDelta();
 		}
@@ -163,54 +163,67 @@ function Enviornment() {
 
 		switch (e.keyCode) {
 			case 66: // "B - Parar Bola"
-				if (_ball.unlockChangeAcc) {
-					_ball.unlockChangeAcc = false;
+				if(!pause){
+					if (_ball.unlockChangeAcc) {
+						_ball.unlockChangeAcc = false;
 
-					if (_ball.acceleration == 0) {
-						_ball.acceleration = 1;
-					}
-					else {
-						_ball.acceleration *= -1;
+						if (_ball.acceleration == 0) {
+							_ball.acceleration = 1;
+						}
+						else {
+							_ball.acceleration *= -1;
+						}
 					}
 				}
 				break;
 
 			case 68: // "D - Luz Direcional"
 				if (unlockLightWorld) {
-					unlockLightWorld = false;
-					_light.visible = !_light.visible;
+					if(!pause){
+						unlockLightWorld = false;
+						_light.visible = !_light.visible;
+					}
 				}
 				break;
 
 			case 76: // "L - Ligar/Desligar Iluminação"
 				if (unlockApplyMaterial) {
-					unlockApplyMaterial = false;
-
-					_sceneObjects.children.forEach((object) => {
-						object.changeMaterial(idx = ((idx + 1) % 2));
-					});
+					if(!pause){
+						unlockApplyMaterial = false;
+					 	idx = ((idx + 1) % 2);
+						_sceneObjects.children.forEach((object) => {
+							object.changeMaterial(idx);
+						});
+					}
 				}
 				break;
 
       case 80: // "P - Luz Pontual"
 				if (unlockLightPontual) {
-					unlockLightPontual = false;
-					_pointLight.visible = !_pointLight.visible;
+					if(!pause){
+						unlockLightPontual = false;
+						_pointLight.visible = !_pointLight.visible;
+					}
 				}
 				break;
 
 			case 82: // "R - Reset da cena"
+				if(unlockReset){
+					unlockReset = false;
+						if (pause){
+							_ball.reset([20,4,0]);
+							_table.reset();
+							_dice.reset();
 
-			if(unlockReset){
-				unlockReset = false;
-					if (_pauseMenu.visible) {
-						this.ball.velocity = 0;
-						this.ball.position.set(20, 4, 0);
-						_pauseMenu.visible = !_pauseMenu.visible;
-						_currCamera = _camera1;
+							_pointLight.visible = true;
+							_light.visible = true;
+							idx = 0;
+							_pauseMenu.visible = !_pauseMenu.visible;
+							pause = !pause;
+							_currCamera = _camera1;
+						}
 					}
-				}
-				break;
+					break;
 
 			case 83: // "S - Pausar/Retomar a cena"
 				if (unlockPauseMenu) {
@@ -222,18 +235,20 @@ function Enviornment() {
 						_currCamera = _camera1;
 					}
 					_pauseMenu.visible = !_pauseMenu.visible;
+					pause = !pause;
 				}
-
 				onResize();
 				break;
 
 			case 87: // "W - Wireframe"
 				if (unlockVisibility) {
-					unlockVisibility = false;
+					if(!pause){
+						unlockVisibility = false;
 
-					_sceneObjects.children.forEach((object) => {
-						object.changeVisibility();
-					});
+						_sceneObjects.children.forEach((object) => {
+							object.changeVisibility();
+						});
+					}
 				}
 				break;
 

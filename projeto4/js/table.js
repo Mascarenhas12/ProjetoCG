@@ -1,63 +1,55 @@
 class Table extends THREE.Object3D {
-  'use strict';
+	'use strict';
 
-  constructor(pos, dim, text, img) {
-    super();
+	constructor( pos, dim ) {
+		super();
 
-    this.canMove = false;
+		var texture1 = Table.createTexture( '../images/board.png' );
+		var texture2 = Table.createTexture( '../images/wood.png' );
 
-    var map = this.createTexture(text);
-    var bump = this.createTexture(img);
-    this.box = Table.createBox(dim,map,bump);
+		this.materials = [
+			new THREE.MeshPhongMaterial({ map:texture1, bumpMap:texture2 }),
+			new THREE.MeshBasicMaterial({ map:texture1 })
+		];
+		this.materials[0].bumpScale = 0.1;
 
-    this.mat = [
-      this.box.material,
-      new THREE.MeshBasicMaterial({map:map,wireframe:false})
-    ];
+		this.box = Table.createBox( dim, this.materials[0] );
+		this.add( this.box );
 
-    this.add(this.box);
-    this.position.set(pos[0], pos[1], pos[2]);
+		this.position.set( pos[0], pos[1], pos[2] );
+	}
 
-  }
+	static createBox( dim, mat ) {
+		return new THREE.Mesh(
+			new THREE.CubeGeometry( dim[0], dim[1], dim[2], 8, 1, 8 ),
+			mat
+		);
+	}
 
-  static createBox(dim,map,bump) {
-    var mat = new THREE.MeshPhongMaterial({map: map,bumpMap: bump, wireframe:false});
-    mat.bumpScale = 0.1;
-    return new THREE.Mesh(
-      new THREE.CubeGeometry(dim[0], dim[1], dim[2]),
-      mat
-    );
-  }
+	static createTexture( img ) {
+		const texture_loader = new THREE.TextureLoader();
+		const texture = texture_loader.load( img );
 
-  createTexture(img) {
-    const texture_loader = new THREE.TextureLoader();
-    const texture = texture_loader.load(img);
+		texture.encoding = THREE.sRGBEncoding;
+		texture.anisotropy = 16;
+		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+		return texture;
+	}
 
-    texture.encoding = THREE.sRGBEncoding;
-    texture.anisotropy = 16; //valores possíveis sao 2^n
-    texture.wrapS = texture.wrapT= THREE.RepeatWrapping;
-    return texture;
-  }
+	update( deltaTime ) {}
 
-  move(deltaTime) {
-    //nothing
-  }
+	changeMaterial( matIdx ) {
+		this.box.material = this.materials[matIdx];
+	}
 
-  changeMaterial(matIdx) {
-    // TODO Phong to Basic and vice versa
-    this.box.material = this.mat[matIdx];
-  }
+	changeVisibility() {
+		this.materials[0].wireframe = !this.materials[0].wireframe;
+		this.materials[1].wireframe = !this.materials[1].wireframe;
+	}
 
-  changeVisibility() {
-  // TODO wireframe = !wireframe
-    this.mat[0].wireframe = !this.mat[0].wireframe;
-    this.mat[1].wireframe = !this.mat[1].wireframe;
-  }
-
-  reset(){
-    this.mat.forEach((node)=>{
-      node.wireframe = false;
-    });
-    this.box.material = this.mat[0];
-  }
+	reset() {
+		this.materials[0].wireframe = false;
+		this.materials[1].wireframe = false;
+		this.box.material = this.materials[0];
+	}
 }

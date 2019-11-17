@@ -1,13 +1,17 @@
 class Ball extends THREE.Object3D {
 	'use strict';
 
-	constructor(pos, dim, img) {
+	constructor( pos, dim ) {
 		super();
 
 		this.unlockChangeAcc = true;
 
+		this.initPos = pos;
 		this.posScalar = pos[0];
+
 		this.angle = 0;
+		this.horzRotation = 0;
+		this.vertRotation = 0;
 
 		this.minVel = 0;
 		this.maxVel = 4;
@@ -16,25 +20,22 @@ class Ball extends THREE.Object3D {
 
 		this.acceleration = 0;
 
-		var texture = Ball.createTexture( img );
+		var texture = Ball.createTexture( '../images/ball.png' );
 
 		this.materials = [
-			new THREE.MeshPhongMaterial({ map: texture, specular: 0xFFFFFF, wireframe: 	false}),
-			new THREE.MeshBasicMaterial({ map: texture, wireframe:false})
+			new THREE.MeshPhongMaterial({ map:texture, specular:0xFFFFFF }),
+			new THREE.MeshBasicMaterial({ map:texture })
 		];
 
 		this.sphere = Ball.createSphere( dim, this.materials[0] );
 		this.sphere.position.set( 0, 0, 0 );
 
 		this.ball = new THREE.Group();
-		this.ball.add(this.sphere);
-		this.ball.add(new THREE.AxisHelper( 20 ));
-
-		this.add(this.ball);
+		this.ball.add( this.sphere );
+		this.ball.add(new THREE.AxesHelper( 10 ));
+		this.add( this.ball );
 
 		this.position.set( pos[0], pos[1], pos[2] );
-
-		this.updateMatrixWorld();
   }
 
 	static createSphere( dim, mat ) {
@@ -49,28 +50,18 @@ class Ball extends THREE.Object3D {
 		const texture = texture_loader.load( img );
 
 		texture.encoding = THREE.sRGBEncoding;
-		texture.anisotropy = 16; // valores possíveis sao 2^n
+		texture.anisotropy = 16;
 		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 		return texture;
 	}
 
-	move( deltaTime ) {
+	update( deltaTime ) {
 		this.accelerate( deltaTime );
-		this.updateVelocity( this.velScalar * deltaTime );
 
-		this.position.x = this.posScalar * this.velocity[0];
-		this.position.z = this.posScalar * this.velocity[1];
+		var delta = this.velScalar * deltaTime;
 
-		this.rotateY( -2 * this.velScalar * deltaTime );
-		this.ball.rotateX( 4 * this.velScalar * deltaTime );
-	}
-
-	updateVelocity( velScalar ) {
-		this.velocity =
-		[
-			Math.cos( this.angle += velScalar ),
-			Math.sin( this.angle += velScalar )
-		];
+		this.move( delta );
+		this.rotate( delta );
 	}
 
 	accelerate( deltaTime ) {
@@ -86,7 +77,30 @@ class Ball extends THREE.Object3D {
 		}
 	}
 
-	changeMaterial(matIdx) {
+	move( delta ) {
+		this.updateVelocity( delta );
+
+		this.position.x = this.posScalar * this.velocity[0];
+		this.position.z = this.posScalar * this.velocity[1];
+	}
+
+	updateVelocity( delta ) {
+		this.velocity =
+		[
+			Math.cos( this.angle += delta ),
+			Math.sin( this.angle += delta )
+		];
+	}
+
+	rotate( delta ) {
+		this.horzRotation += -2 * delta;
+		this.vertRotation += 4 * delta;
+
+		this.rotateY( -2 * delta );
+		this.ball.rotateX( 4 * delta );
+	}
+
+	changeMaterial( matIdx ) {
 		this.sphere.material = this.materials[matIdx];
 	}
 
@@ -95,14 +109,28 @@ class Ball extends THREE.Object3D {
     this.materials[1].wireframe = !this.materials[1].wireframe;
 	}
 
-	reset(pos){
-		this.angle = 0;
+	reset() {
+		this.position.set( this.initPos[0], this.initPos[1], this.initPos[2] );
+		this.velocity = [this.minVel, this.minVel];
 		this.velScalar = 0;
-		this.velocity = [0,0];
 		this.acceleration = 0;
+
+		this.resetRotation();
+		this.resetMaterials();
+	}
+
+	resetRotation() {
+		this.rotateY( -this.horzRotation );
+		this.ball.rotateX( -this.vertRotation );
+
+		this.angle = 0;
+		this.horzRotation = 0;
+		this.vertRotation = 0;
+	}
+
+	resetMaterials() {
 		this.materials[0].wireframe = false;
-    this.materials[1].wireframe = false;
+		this.materials[1].wireframe = false;
 		this.sphere.material = this.materials[0];
-		this.position.set(pos[0],pos[1],pos[2]);
 	}
 }

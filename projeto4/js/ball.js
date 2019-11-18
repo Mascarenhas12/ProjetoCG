@@ -23,7 +23,7 @@ class Ball extends THREE.Object3D {
 		var texture = Ball.createTexture( '../images/ball.png' );
 
 		this.materials = [
-			new THREE.MeshPhongMaterial({ map:texture, specular:0xFFFFFF }),
+			new THREE.MeshPhongMaterial({ map:texture, specular:0xFFFFFF, shininess:100 }),
 			new THREE.MeshBasicMaterial({ map:texture })
 		];
 
